@@ -42,7 +42,15 @@
     </developer>
   </developers>
 
+  <scm>
+    <connection>scm:git:git@github.com:${github.user}/${project.artifactId}.git</connection>
+    <url>scm:git:git@github.com:${github.user}/${project.artifactId}.git</url>
+    <developerConnection>scm:git:git@github.com:${github.user}/${project.artifactId}.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  
   <properties>
+    <clearspring.analytics.stream.version>2.7.0</clearspring.analytics.stream.version>
     <cxf.version>2.7.11</cxf.version>
     <felix.version>4.0.3</felix.version>
     <guava.version>16.0.1</guava.version>
@@ -50,22 +58,120 @@
     <json-simple.version>1.1.1</json-simple.version>
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
-    <requirejs.version>2.1.14</requirejs.version>
-    <requirejs.version.full>${requirejs.version}-1</requirejs.version.full>
     <slf4j.version>1.7.3</slf4j.version>
 
     <!-- Other pentaho dependency versions -->
-    <kettle.version>6.0-SNAPSHOT</kettle.version>
-    <notification.version>6.0-SNAPSHOT</notification.version>
+    <notification.version>${project.version}</notification.version>
+    <pentaho-i18n-bundle.version>${project.version}</pentaho-i18n-bundle.version>
     <bean-matchers.version>0.9</bean-matchers.version>
+ 	
+    <source.jdk.version>1.6</source.jdk.version>
+    <target.jdk.version>1.6</target.jdk.version>
+ 	
+    <plugin.org.apache.maven.plugins.maven-compiler-plugin.version>3.0</plugin.org.apache.maven.plugins.maven-compiler-plugin.version> 
+    <plugin.org.apache.felix.maven-bundle-plugin.version>2.3.7</plugin.org.apache.felix.maven-bundle-plugin.version>
   </properties>
 
-  <scm>
-    <connection>scm:git:git@github.com:${github.user}/${project.artifactId}.git</connection>
-    <url>scm:git:git@github.com:${github.user}/${project.artifactId}.git</url>
-    <developerConnection>scm:git:git@github.com:${github.user}/${project.artifactId}.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
+  
+
+  
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-data-profiling-api-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-data-profiling-api-core</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-data-profiling-model-core</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-data-profiling-model-metrics</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-data-profiling-api-doc-rest</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-data-profiling-api-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>pentaho</groupId>
+      <artifactId>pentaho-notification-webservice-bundle</artifactId>
+      <version>${notification.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.bean-matchers</groupId>
+      <artifactId>bean-matchers</artifactId>
+      <version>${bean-matchers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+     <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <version>${felix.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
 
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -93,12 +199,27 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.0</version>
+        <version>${plugin.org.apache.maven.plugins.maven-compiler-plugin.version}</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>${source.jdk.version}</source>
+          <target>${target.jdk.version}</target>
         </configuration>
       </plugin>
     </plugins>
+    
+    <pluginManagement>
+      <plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-dependency-plugin</artifactId>
+	      </plugin>
+	     <plugin>
+	        <groupId>org.apache.felix</groupId>
+	        <artifactId>maven-bundle-plugin</artifactId>
+	        <version>${plugin.org.apache.felix.maven-bundle-plugin.version}</version>
+	        <extensions>true</extensions>
+	      </plugin>
+        </plugins>
+    </pluginManagement>
   </build>
 </project>

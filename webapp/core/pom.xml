@@ -11,6 +11,14 @@
 
   <artifactId>pentaho-data-profiling-webapp-core</artifactId>
   <packaging>bundle</packaging>
+  
+  <properties>
+    <requirejs.version>2.1.14</requirejs.version>
+    <requirejs.version.full>${requirejs.version}-1</requirejs.version.full>
+    <angularjs.version>1.2.21</angularjs.version>
+    <jquery.version>1.9.1</jquery.version>
+    
+  </properties>
 
   <dependencies>
     <dependency>
@@ -22,13 +30,13 @@
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>angularjs</artifactId>
-      <version>1.2.21</version>
+      <version>${angularjs.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>jquery</artifactId>
-      <version>1.9.1</version>
+      <version>${jquery.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

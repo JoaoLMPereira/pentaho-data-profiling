@@ -12,6 +12,11 @@
   <artifactId>pentaho-data-profiling-rest</artifactId>
   <packaging>pom</packaging>
 
+  <properties>
+  <geronimo-servlet_2.5_spec.version>1.2</geronimo-servlet_2.5_spec.version>
+  <plugin.org.apache.maven.plugins.maven-javadoc-plugin.version>2.10.2</plugin.org.apache.maven.plugins.maven-javadoc-plugin.version>
+  </properties>
+
   <modules>
     <module>doc</module>
     <module>core</module>
@@ -20,9 +25,33 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.2</version>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-servlet_2.5_spec</artifactId>
+        <version>${geronimo-servlet_2.5_spec.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.googlecode.json-simple</groupId>
+        <artifactId>json-simple</artifactId>
+        <version>${json-simple.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http</artifactId>
+        <version>${cxf.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        <version>${cxf.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http-jetty</artifactId>
+        <version>${cxf.version}</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -32,8 +61,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <version>2.3.7</version>
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
@@ -49,7 +76,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.2</version>
+        <version>${plugin.org.apache.maven.plugins.maven-javadoc-plugin.version}</version>
         <executions>
           <execution>
             <id>restdoclet</id>
