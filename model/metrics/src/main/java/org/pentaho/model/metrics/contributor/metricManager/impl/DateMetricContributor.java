@@ -38,8 +38,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * DateMetricContributor is a MetricManagerContributor that contributes for the date min and max metrics. The date max
+ * and min metrics keep the smallest and the highest dates in a filed.
+ * <p>
  * Created by mhall on 27/01/15.
- * Modified by jpereira.
+ * 
+ * @author mhall
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class DateMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   public static final String SIMPLE_NAME = DateMetricContributor.class.getSimpleName();

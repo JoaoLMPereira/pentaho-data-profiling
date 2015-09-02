@@ -41,8 +41,16 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by bryan on 4/13/15.
- * Modified by jpereira.
+ * ClassLoader for objects existing in Bundles, it is used to deserialize objects which class is not present in the
+ * bundle that deserialize the object.
+ * <p>
+ * Additionally it can deserialize from hot-deploy bundles through kar files. To use this feature, pass the KarService
+ * to the constructor of the BundleListClassloader, and add the kar files to folder ${karaf.home}/kar_deploy. Created by
+ * bryan on 4/13/15.
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class BundleListClassloader extends ClassLoader {
   private static final String KAR_DEPLOY_FOLDER_NAME = "kar_deploy";
@@ -52,10 +60,36 @@ public class BundleListClassloader extends ClassLoader {
   private volatile List<Bundle> bundles;
   private static final Logger LOGGER = LoggerFactory.getLogger( BundleListClassloader.class );
 
+  /**
+   * Constructs the BundleListClassLoader which will be responsible to load the classes definitions for objects that are
+   * instances of each class passed as argument. 
+   * 
+   * @param bundleContext
+   *          bundle context to allow to subscribe the services that implement the classes wanted to load and to know
+   *          which bundles contain such classes
+   * @param servicesToTrack
+   *          a list of Class to be tracked
+   */
   public BundleListClassloader( BundleContext bundleContext, List<Class> servicesToTrack ) {
     this( bundleContext, servicesToTrack, null );
   }
 
+  /**
+   * Constructs the BundleListClassLoader which will be responsible to load the classes definitions for objects that are
+   * instances of each class passed as argument. 
+   * <p>
+   * Additionally, it receives a KarService that loads kar files before
+   * the BundleListClassLoader starts. This is mainly used when we initialize a client server that immediately needs to
+   * have every bundle from the kar file installed, so it can instantiate the objects from Json format.
+   * 
+   * @param bundleContext
+   *          bundle context to allow to subscribe the services that implement the classes wanted to load and to know
+   *          which bundles contain such classes
+   * @param servicesToTrack
+   *          a list of Class to be tracked
+   * @param karService
+   *          a service that is used to install kar files
+   */
   public BundleListClassloader( BundleContext bundleContext, List<Class> servicesToTrack, KarService karService ) {
     if ( karService != null )
       installDeployedKars( karService );
@@ -97,6 +131,10 @@ public class BundleListClassloader extends ClassLoader {
     }
   }
 
+  /**
+   * This method is used to install bundles inside kar files before starting using the classloader, so this way we can guarantee that the
+   * classes definitions are available when the system has to deserialize an object.
+   */
   private void installDeployedKars( KarService karService ) {
     String karafHome = System.getProperty( "karaf.home" );
     File karDeployFolder = new File( karafHome + "/" + KAR_DEPLOY_FOLDER_NAME );

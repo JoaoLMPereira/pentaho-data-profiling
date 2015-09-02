@@ -36,8 +36,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Metric contributor that computes a standard set of numeric metrics - sum, mean, min, max, sum of squares, variance
+ * and standard deviation using the string length at each field value
+ * 
  * Created by mhall on 27/01/15.
- * Modified by jpereira
+ * @author mhall
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class StringLengthMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   private final NumericMetricContributor numericMetricManagerContributor;

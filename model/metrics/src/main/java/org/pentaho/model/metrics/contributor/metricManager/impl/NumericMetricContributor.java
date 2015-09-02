@@ -46,7 +46,9 @@ import java.util.Set;
  * and standard deviation
  * <p/>
  * Created by mhall on 23/01/15.
- * Modified by jpereira
+ * @author mhall
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class NumericMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   public static final String[] MIN_PATH = new String[] { MetricContributorUtils.STATISTICS, Statistic.MIN };
@@ -138,7 +140,7 @@ public class NumericMetricContributor extends BaseMetricManagerContributor imple
     }
   }
 
-  public List<ProfileFieldProperty> profileFieldProperties() {
+  @Override public List<ProfileFieldProperty> profileFieldProperties() {
     return getProfileFieldPropertiesStatic();
   }
 

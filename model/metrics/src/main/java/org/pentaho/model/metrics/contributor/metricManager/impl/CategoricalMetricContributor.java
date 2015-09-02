@@ -41,8 +41,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Metric contributor that contributes for the Categorical metric. The categorical metric is a binary metric that give
+ * true when the number of distinct objects of type Number are above a certain threshold called distinctAllowed.
+ * <p>
  * Created by mhall on 28/01/15.
- * Modified by jpereira.
+ * 
+ * @author mhall
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class CategoricalMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   public static final String KEY_PATH =
@@ -53,10 +59,22 @@ public class CategoricalMetricContributor extends BaseMetricManagerContributor i
       MetricContributorUtils.CATEGORICAL );
   private int distinctAllowed = 100;
 
+  /**
+   * Gets the threshold that limits the number of distinct objects of type Number present in a field so this field is
+   * considered a Category.
+   * 
+   * @return the threshold above that a field is considered a Category
+   */
   public int getDistinctAllowed() {
     return distinctAllowed;
   }
 
+  /**
+   * Sets the threshold that limits the number of distinct objects of type Number present in a field so this field is
+   * considered a Category.
+   * 
+   * @param distinctAllowed the threshold above that a field is considered a Category
+   */
   public void setDistinctAllowed( int distinctAllowed ) {
     this.distinctAllowed = distinctAllowed;
   }

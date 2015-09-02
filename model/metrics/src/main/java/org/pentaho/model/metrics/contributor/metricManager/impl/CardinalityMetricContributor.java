@@ -48,8 +48,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Metric contributor that computes for the cardinality metric using the
+ * com.clearspring.analytics.stream.cardinality.HyperLogLogPlus.
+ * <p>
  * Created by mhall on 27/01/15.
- * Modified by jpereira.
+ * 
+ * @author mhall
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class CardinalityMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   public static final String KEY_PATH =
@@ -120,22 +126,39 @@ public class CardinalityMetricContributor extends BaseMetricManagerContributor i
     getOrCreateHyperLogLogPlusHolder( mutableProfileFieldValueType ).calculateCardinality();
   }
 
+  @Override
   public List<ProfileFieldProperty> profileFieldProperties() {
     return Arrays.asList( CARDINALITY );
   }
 
+  /**
+   * 
+   * @return the precision for the "normal" mode of HyperLogLogPlus
+   */
   public int getNormalPrecision() {
     return normalPrecision;
   }
 
+  /**
+   * 
+   * @param normalPrecision the precision for the "normal" mode of HyperLogLogPlus
+   */
   public void setNormalPrecision( int normalPrecision ) {
     this.normalPrecision = normalPrecision;
   }
 
+  /**
+   * 
+   * @return the precision for the "sparse" mode of HyperLogLogPlus
+   */
   public int getSparsePrecision() {
     return sparsePrecision;
   }
 
+  /**
+   * 
+   * @param sparsePrecision the precision for the "sparse" mode of HyperLogLogPlus
+   */
   public void setSparsePrecision( int sparsePrecision ) {
     this.sparsePrecision = sparsePrecision;
   }

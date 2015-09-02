@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- * Pentaho Data Profiling
+  * Pentaho Data Profiling
  *
  * Copyright (C) 2002-2015 by Pentaho : http://www.pentaho.com
  *
@@ -41,9 +41,14 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
+ * Metric contributor that counts the number of field values containing addresses.
+ * 
  * Created by mhall on 28/01/15.
- * Modified by jpereira
+ * @author mhall
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
+
 public class RegexAddressMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   public static final String KEY_PATH =
     MessageUtils.getId( Constants.KEY, RegexAddressMetricContributor.class );
