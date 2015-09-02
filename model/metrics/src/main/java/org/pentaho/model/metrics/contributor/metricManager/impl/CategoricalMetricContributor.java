@@ -42,6 +42,7 @@ import java.util.Set;
 
 /**
  * Created by mhall on 28/01/15.
+ * Modified by jpereira.
  */
 public class CategoricalMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   public static final String KEY_PATH =
@@ -91,6 +92,11 @@ public class CategoricalMetricContributor extends BaseMetricManagerContributor i
       CategoricalHolder into = getOrCreateCategoricalHolder( mutableProfileFieldValueType );
       into.add( from );
     }
+  }
+
+  @Override
+  public CategoricalMetricContributor clone() {
+    return new CategoricalMetricContributor();
   }
 
   @Override public List<ProfileFieldProperty> profileFieldProperties() {

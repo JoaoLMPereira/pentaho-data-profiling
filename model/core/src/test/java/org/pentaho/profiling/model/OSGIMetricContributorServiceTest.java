@@ -22,23 +22,18 @@
 
 package org.pentaho.profiling.model;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.pentaho.profiling.api.MutableProfileFieldValueType;
+import org.pentaho.profiling.api.MutableProfileStatus;
 import org.pentaho.profiling.api.ProfileFieldProperty;
 import org.pentaho.profiling.api.ProfileFieldValueType;
+import org.pentaho.profiling.api.ProfileStatus;
 import org.pentaho.profiling.api.action.ProfileActionException;
-import org.pentaho.profiling.api.json.ObjectMapperFactory;
 import org.pentaho.profiling.api.metrics.MetricContributor;
-import org.pentaho.profiling.api.metrics.MetricContributors;
 import org.pentaho.profiling.api.metrics.MetricManagerContributor;
 import org.pentaho.profiling.api.metrics.MetricMergeException;
 import org.pentaho.profiling.api.metrics.field.DataSourceFieldValue;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,74 +41,44 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
 
 /**
- * Created by bryan on 4/24/15.
- * Modified by jpereira on 9/2/15
+ * Created by jpereira on 9/2/15
  */
-public class MetricContributorServiceImplTest {
-  public static final String KARAF_HOME = "src/test/resources";
+public class OSGIMetricContributorServiceTest {
+
   private OSGIMetricContributorService oSGIMetricContributorService;
-  private ObjectMapperFactory objectMapperFactory;
-  private String jsonFile;
-  private MetricContributorServiceImpl metricContributorService;
-  private Path karafHomePath;
-  private Path jsonPath;
 
   @Before
   public void setup() {
     oSGIMetricContributorService = new OSGIMetricContributorService();
-    objectMapperFactory = mock( ObjectMapperFactory.class );
-    jsonFile = "testMetricContributors.json";
-    karafHomePath = FileSystems.getDefault().getPath( KARAF_HOME ).normalize().toAbsolutePath();
-    metricContributorService =
-      new MetricContributorServiceImpl( oSGIMetricContributorService, objectMapperFactory,
-        karafHomePath.normalize().toFile().getAbsolutePath() );
-    jsonPath = karafHomePath.resolve( MetricContributorServiceImpl.ETC_METRIC_CONTRIBUTORS_JSON );
-  }
-
-  @After
-  public void tearDown() {
-    File file = jsonPath.toFile();
-    if ( file.exists() ) {
-      file.delete();
-    }
   }
 
   @Test
-  public void testTwoArgConstructor() {
-    assertNull(
-      new MetricContributorServiceImpl( oSGIMetricContributorService, objectMapperFactory, null ).getJsonFile() );
-    assertEquals( jsonPath, FileSystems.getDefault().getPath(
-      new MetricContributorServiceImpl( oSGIMetricContributorService, objectMapperFactory, KARAF_HOME ).getJsonFile() )
-      .normalize().toAbsolutePath() );
+  public void testMetricContributorAddedRemovedList() {
+    MetricContributor testMetricContributor = new TestMetricContributor();
+    oSGIMetricContributorService.metricContributorAdded( testMetricContributor );
+    assertEquals( new ArrayList<MetricContributor>( Arrays.asList( testMetricContributor.clone() ) ),
+        oSGIMetricContributorService.getMetricContributorList() );
+
+    oSGIMetricContributorService.metricContributorRemoved( testMetricContributor );
+    assertEquals( new ArrayList<MetricContributor>(),
+        oSGIMetricContributorService.getMetricContributorList() );
   }
 
   @Test
-  public void testSetDefault() {
-    MetricContributors metricContributors = new MetricContributors();
-    String configuration = "new";
-    metricContributorService.setDefaultMetricContributors( configuration, metricContributors );
-    assertEquals( metricContributors, metricContributorService.getDefaultMetricContributors( configuration ) );
+  public void testMetricManagerContributorAddedRemovedList() {
+    MetricManagerContributor testMetricManagerContributor = new TestMetricManagerContributor();
+    oSGIMetricContributorService.metricManagerContributorAdded( testMetricManagerContributor );
+    assertEquals( new ArrayList<MetricManagerContributor>( Arrays.asList( testMetricManagerContributor.clone() ) ),
+        oSGIMetricContributorService.getMetricManagerContributorList() );
+
+    oSGIMetricContributorService.metricManagerContributorRemoved( testMetricManagerContributor );
+    assertEquals( new ArrayList<MetricManagerContributor>(),
+        oSGIMetricContributorService.getMetricManagerContributorList() );
   }
 
-  @Test
-  public void testGetFull() {
-    metricContributorService =
-      new MetricContributorServiceImpl( oSGIMetricContributorService,
-        objectMapperFactory, karafHomePath.normalize().toFile().getAbsolutePath() );
-    assertEquals( new MetricContributors( new ArrayList<MetricContributor>(), new ArrayList
-        <MetricManagerContributor>() ), metricContributorService.getDefaultMetricContributors( "full" ) );
-
-    oSGIMetricContributorService.metricManagerContributorAdded( new TestMetricContributor() );
-    assertEquals( new MetricContributors( new ArrayList<MetricContributor>(), new ArrayList
-        <MetricManagerContributor>( Arrays.asList( new TestMetricContributor() ) ) ),
-        metricContributorService.getDefaultMetricContributors( "full" ) );
-  }
-
-  public static class TestMetricContributor implements MetricManagerContributor {
+  public static class TestMetricContributor implements MetricContributor {
     private String param1;
     private String name;
 
@@ -123,6 +88,76 @@ public class MetricContributorServiceImplTest {
     }
 
     public TestMetricContributor() {
+      this( "initialValue", null );
+    }
+
+    public String getParam1() {
+      return param1;
+    }
+
+    public void setParam1( String param1 ) {
+      this.param1 = param1;
+    }
+    @Override
+    public void processFields( MutableProfileStatus mutableProfileStatus, List<DataSourceFieldValue> values )
+      throws ProfileActionException {
+
+    }
+
+    @Override
+    public void setDerived( MutableProfileStatus mutableProfileStatus ) throws ProfileActionException {
+
+    }
+
+    @Override
+    public void merge( MutableProfileStatus into, ProfileStatus from ) throws MetricMergeException {
+
+    }
+
+    @Override
+    public List<ProfileFieldProperty> getProfileFieldProperties() {
+      return null;
+    }
+
+    @Override public TestMetricContributor clone() {
+      return new TestMetricContributor( param1, name );
+    }
+
+    @Override public boolean equals( Object o ) {
+      if ( this == o ) {
+        return true;
+      }
+      if ( o == null || getClass() != o.getClass() ) {
+        return false;
+      }
+
+      TestMetricContributor that = (TestMetricContributor) o;
+
+      if ( param1 != null ? !param1.equals( that.param1 ) : that.param1 != null ) {
+        return false;
+      }
+      return !( name != null ? !name.equals( that.name ) : that.name != null );
+
+    }
+
+    @Override public int hashCode() {
+      int result = param1 != null ? param1.hashCode() : 0;
+      result = 31 * result + ( name != null ? name.hashCode() : 0 );
+      return result;
+    }
+
+  }
+
+  public static class TestMetricManagerContributor implements MetricManagerContributor {
+    private String param1;
+    private String name;
+
+    public TestMetricManagerContributor( String param1, String name ) {
+      this.param1 = param1;
+      this.name = name;
+    }
+
+    public TestMetricManagerContributor() {
       this( "initialValue", null );
     }
 
@@ -167,8 +202,8 @@ public class MetricContributorServiceImplTest {
       return null;
     }
 
-    @Override public TestMetricContributor clone() {
-      return new TestMetricContributor( param1, name );
+    @Override public TestMetricManagerContributor clone() {
+      return new TestMetricManagerContributor( param1, name );
     }
 
     @Override public boolean equals( Object o ) {
@@ -179,7 +214,7 @@ public class MetricContributorServiceImplTest {
         return false;
       }
 
-      TestMetricContributor that = (TestMetricContributor) o;
+      TestMetricManagerContributor that = (TestMetricManagerContributor) o;
 
       if ( param1 != null ? !param1.equals( that.param1 ) : that.param1 != null ) {
         return false;

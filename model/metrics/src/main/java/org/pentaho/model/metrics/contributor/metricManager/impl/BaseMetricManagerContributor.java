@@ -28,6 +28,7 @@ import org.pentaho.profiling.api.metrics.MetricManagerContributor;
 
 /**
  * Created by bryan on 3/10/15.
+ * Modified by jpereira.
  */
 public abstract class BaseMetricManagerContributor implements MetricManagerContributor {
   private String name = getClass().getSimpleName();
@@ -44,4 +45,5 @@ public abstract class BaseMetricManagerContributor implements MetricManagerContr
     throws ProfileActionException {
 
   }
+  @Override public abstract BaseMetricManagerContributor clone();
 }

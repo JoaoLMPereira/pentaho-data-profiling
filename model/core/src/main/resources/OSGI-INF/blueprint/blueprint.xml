@@ -21,9 +21,11 @@
         scope="singleton"/>
 
   <bean id="metricContributorServiceImpl" class="org.pentaho.profiling.model.MetricContributorServiceImpl">
-    <argument ref="metricContributorBundles"/>
+    <argument ref="oSGImetricContributorService"/>
     <argument ref="metricObjectMapperFactory"/>
   </bean>
+  
+  <bean id="oSGImetricContributorService" class="org.pentaho.profiling.model.OSGIMetricContributorService"> </bean>
 
   <bean id="metricContributorsFactoryImpl" class="org.pentaho.profiling.model.MetricContributorsFactoryImpl"
         scope="singleton">
@@ -47,6 +49,12 @@
       <list>
         <value type="java.lang.Class">
           org.pentaho.profiling.api.metrics.bundle.MetricContributorBundle
+        </value>
+        <value type="java.lang.Class">
+          org.pentaho.profiling.api.metrics.MetricContributor
+        </value>
+        <value type="java.lang.Class">
+          org.pentaho.profiling.api.metrics.MetricManagerContributor
         </value>
       </list>
     </argument>
@@ -90,4 +98,14 @@
   <reference-list id="metricContributorBundles"
                   interface="org.pentaho.profiling.api.metrics.bundle.MetricContributorBundle" availability="optional"/>
   <reference-list id="mapperDefinitions" interface="org.pentaho.profiling.api.mapper.MapperDefinition" availability="optional"/>
+  <reference-list id="metricContributorInstances"
+                  interface="org.pentaho.profiling.api.metrics.MetricContributor" availability="optional">
+                  <reference-listener ref="oSGImetricContributorService" bind-method="metricContributorAdded"
+                        unbind-method="metricContributorRemoved"/>
+  </reference-list>               
+  <reference-list id="metricManagerContributorInstances"
+                  interface="org.pentaho.profiling.api.metrics.MetricManagerContributor" availability="optional">
+                        <reference-listener ref="oSGImetricContributorService" bind-method="metricManagerContributorAdded"
+                        unbind-method="metricManagerContributorRemoved"/>
+  </reference-list>
 </blueprint>

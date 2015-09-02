@@ -41,6 +41,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+/**
+ * Modified by jpereira.
+ */
+
 public class WordCountMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
 
   public static final String KEY_PATH =
@@ -109,6 +113,10 @@ public class WordCountMetricContributor extends BaseMetricManagerContributor imp
     return Arrays.asList( WORD_COUNT_MIN, WORD_COUNT_MAX, WORD_COUNT_SUM, WORD_COUNT_MEAN );
   }
 
+  public WordCountMetricContributor clone() {
+    return new WordCountMetricContributor();
+  }
+  
   @Override public boolean equals( Object obj ) {
     return obj != null && obj.getClass().equals( WordCountMetricContributor.class );
   }

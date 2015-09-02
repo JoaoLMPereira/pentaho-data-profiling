@@ -19,7 +19,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     
-    <karaf.version>3.0.3</karaf.version>
     <hawtio.version>1.4.11</hawtio.version>
     <camel.version>2.13.2</camel.version>
     

@@ -46,7 +46,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -80,9 +82,12 @@ public class StreamingProfileImpl implements StreamingProfile {
           ProfileFieldProperties.PHYSICAL_NAME, ProfileFieldProperties.FIELD_TYPE,
           ProfileFieldProperties.COUNT_FIELD );
         List<ProfileFieldProperty> profileFieldProperties = new ArrayList<ProfileFieldProperty>( intrinsicProperties );
+        Set<ProfileFieldProperty> addedProperties = new HashSet<ProfileFieldProperty>();
         for ( MetricContributor metricContributor : metricContributorList ) {
           for ( ProfileFieldProperty profileFieldProperty : metricContributor.getProfileFieldProperties() ) {
-            profileFieldProperties.add( profileFieldProperty );
+            if ( addedProperties.add( profileFieldProperty ) ) {
+              profileFieldProperties.add( profileFieldProperty );
+            }
           }
         }
         profileStatus.setProfileFieldProperties( profileFieldProperties );

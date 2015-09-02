@@ -124,6 +124,12 @@
         <value type="java.lang.Class">
           org.pentaho.profiling.api.mapper.MapperDefinition
         </value>
+        <value type="java.lang.Class">
+          org.pentaho.profiling.api.metrics.MetricContributor
+        </value>
+        <value type="java.lang.Class">
+          org.pentaho.profiling.api.metrics.MetricManagerContributor
+        </value>
       </list>
     </argument>
   </bean>
@@ -155,6 +161,12 @@
                   interface="org.pentaho.profiling.api.metrics.bundle.MetricContributorBundle" availability="optional"/>
   <reference-list id="mapperDefinitions" interface="org.pentaho.profiling.api.mapper.MapperDefinition"
                   availability="optional"/>
+  <reference-list id="metricContributorInstances"
+                  interface="org.pentaho.profiling.api.metrics.MetricContributor" availability="optional">
+  </reference-list>               
+  <reference-list id="metricManagerContributorInstances"
+                  interface="org.pentaho.profiling.api.metrics.MetricManagerContributor" availability="optional">
+  </reference-list>                    
   <reference-list id="notificationProviderList" interface="org.pentaho.osgi.notification.api.NotifierWithHistory"
                   availability="optional">
     <reference-listener ref="profileTreeNotifier" bind-method="addNotifier"/>

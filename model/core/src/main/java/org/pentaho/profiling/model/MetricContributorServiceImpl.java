@@ -23,11 +23,8 @@
 package org.pentaho.profiling.model;
 
 import org.pentaho.profiling.api.json.ObjectMapperFactory;
-import org.pentaho.profiling.api.metrics.MetricContributor;
 import org.pentaho.profiling.api.metrics.MetricContributorService;
 import org.pentaho.profiling.api.metrics.MetricContributors;
-import org.pentaho.profiling.api.metrics.MetricManagerContributor;
-import org.pentaho.profiling.api.metrics.bundle.MetricContributorBundle;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,30 +34,30 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by bryan on 3/11/15.
+ * Modified by jpereira on 8/28/15.
  */
 public class MetricContributorServiceImpl implements MetricContributorService {
   public static final String ETC_METRIC_CONTRIBUTORS_JSON = "etc/metricContributors.json";
   private static final Logger LOGGER = LoggerFactory.getLogger( MetricContributorServiceImpl.class );
-  private final List<MetricContributorBundle> metricContributorBundles;
+
   private final String jsonFile;
   private final ObjectMapper objectMapper;
+  private final OSGIMetricContributorService oSGIMetricContributorService;
 
-  public MetricContributorServiceImpl( List<MetricContributorBundle> metricContributorBundles,
-                                       ObjectMapperFactory objectMapperFactory ) {
-    this( metricContributorBundles, objectMapperFactory, System.getProperty( "karaf.home" ) );
+  public MetricContributorServiceImpl( OSGIMetricContributorService oSGIMetricContributorService,
+      ObjectMapperFactory objectMapperFactory ) {
+    this( oSGIMetricContributorService, objectMapperFactory, System.getProperty( "karaf.home" ) );
   }
 
-  public MetricContributorServiceImpl( List<MetricContributorBundle> metricContributorBundles,
-                                       ObjectMapperFactory objectMapperFactory, String karafHome ) {
-    this.metricContributorBundles = metricContributorBundles;
+  public MetricContributorServiceImpl( OSGIMetricContributorService oSGIMetricContributorService,
+      ObjectMapperFactory objectMapperFactory, String karafHome ) {
     this.objectMapper = objectMapperFactory.createMapper();
+    this.oSGIMetricContributorService = oSGIMetricContributorService;
     this.jsonFile = findJsonFile( karafHome );
   }
 
@@ -81,27 +78,8 @@ public class MetricContributorServiceImpl implements MetricContributorService {
   }
 
   private MetricContributors getFullMetricContributors() {
-    List<MetricContributor> metricContributorList = new ArrayList<MetricContributor>();
-    List<MetricManagerContributor> metricManagerContributorList = new ArrayList<MetricManagerContributor>();
-    for ( MetricContributorBundle metricContributorBundle : metricContributorBundles ) {
-      for ( Class<?> clazz : metricContributorBundle.getClasses() ) {
-        try {
-          if ( MetricContributor.class.isAssignableFrom( clazz ) ) {
-            metricContributorList.add( (MetricContributor) clazz.newInstance() );
-          } else if ( MetricManagerContributor.class.isAssignableFrom( clazz ) ) {
-            metricManagerContributorList.add( (MetricManagerContributor) clazz.newInstance() );
-          } else {
-            LOGGER.warn( "Unable to add metric contributor " + clazz.getCanonicalName() + ": not a subtype of "
-              + MetricContributor.class.getCanonicalName() + " or " + MetricManagerContributor.class
-              .getCanonicalName() );
-          }
-        } catch ( Exception e ) {
-          LOGGER.warn( "Unable to add metric contributor " + clazz.getCanonicalName(), e );
-        }
-      }
-    }
-
-    return new MetricContributors( metricContributorList, metricManagerContributorList );
+    return new MetricContributors( oSGIMetricContributorService.getMetricContributorList(),
+        oSGIMetricContributorService.getMetricManagerContributorList() );
   }
 
   @Override public synchronized Map<String, MetricContributors> getAllConfigurations() {

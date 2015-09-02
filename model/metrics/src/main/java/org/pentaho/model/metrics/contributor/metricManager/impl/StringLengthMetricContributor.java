@@ -37,6 +37,7 @@ import java.util.Set;
 
 /**
  * Created by mhall on 27/01/15.
+ * Modified by jpereira
  */
 public class StringLengthMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   private final NumericMetricContributor numericMetricManagerContributor;
@@ -98,7 +99,12 @@ public class StringLengthMetricContributor extends BaseMetricManagerContributor 
   }
 
   @Override public String toString() {
-    return "StringLengthMetricContributor{}";
+    return "StringLengthMetricContributor{" + numericMetricManagerContributor + "}";
+  }
+
+  @Override
+  public StringLengthMetricContributor clone() {
+    return new StringLengthMetricContributor();
   }
   //CHECKSTYLE:OperatorWrap:ON
 }
