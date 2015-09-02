@@ -42,7 +42,12 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
- * Modified by jpereira.
+ * Metric contributor that computes a standard set of numeric metrics - sum, mean, min, max using the number of words at
+ * each field value
+ * 
+ * @author unascribed
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 
 public class WordCountMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
@@ -113,10 +118,10 @@ public class WordCountMetricContributor extends BaseMetricManagerContributor imp
     return Arrays.asList( WORD_COUNT_MIN, WORD_COUNT_MAX, WORD_COUNT_SUM, WORD_COUNT_MEAN );
   }
 
-  public WordCountMetricContributor clone() {
+  @Override public WordCountMetricContributor clone() {
     return new WordCountMetricContributor();
   }
-  
+
   @Override public boolean equals( Object obj ) {
     return obj != null && obj.getClass().equals( WordCountMetricContributor.class );
   }

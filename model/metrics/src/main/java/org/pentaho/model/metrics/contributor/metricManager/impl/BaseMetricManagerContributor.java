@@ -27,8 +27,13 @@ import org.pentaho.profiling.api.action.ProfileActionException;
 import org.pentaho.profiling.api.metrics.MetricManagerContributor;
 
 /**
+ * BaseMetricManagerContributor is the abstract class for every MetricManagerContributor. It provides the
+ * implementations for getName and setName methods, being the name initialized to the object class simple name.
+ * <p>
  * Created by bryan on 3/10/15.
- * Modified by jpereira.
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public abstract class BaseMetricManagerContributor implements MetricManagerContributor {
   private String name = getClass().getSimpleName();

@@ -38,8 +38,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by bryan on 3/11/15.
- * Modified by jpereira on 8/28/15.
+ * Implementation for the MetricContributorService interface. It uses the metrics from OSGIMetricContributorService and
+ * from a JSONFile. When there is no JSONFile, the default and full configurations are loaded from the metrics provided through
+ * the OSGIMetricContributorService. 
+ * <p>
+ * Created by bryan on 3/11/15. 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class MetricContributorServiceImpl implements MetricContributorService {
   public static final String ETC_METRIC_CONTRIBUTORS_JSON = "etc/metricContributors.json";
@@ -49,11 +55,33 @@ public class MetricContributorServiceImpl implements MetricContributorService {
   private final ObjectMapper objectMapper;
   private final OSGIMetricContributorService oSGIMetricContributorService;
 
+  /**
+   * Constructs the MetricContributorServiceImpl using a OSGIMetricContributorService that provides metrics injected by
+   * bundles and an ObjectMapperFactory that can serialize and deserialize from java object to Json. It will search for
+   * the JSONFile containing the metrics configurations at the location set by karaf.home property.
+   * 
+   * @param oSGIMetricContributorService
+   *          the OSGIMetricContributorService that contains the metrics injected by bundles
+   * @param objectMapperFactory
+   *          an object that can serialize and deserialize from Java Objects to Json.
+   */
   public MetricContributorServiceImpl( OSGIMetricContributorService oSGIMetricContributorService,
       ObjectMapperFactory objectMapperFactory ) {
     this( oSGIMetricContributorService, objectMapperFactory, System.getProperty( "karaf.home" ) );
   }
 
+  /**
+   * Constructs the MetricContributorServiceImpl using a OSGIMetricContributorService that provides metrics injected by
+   * bundles, an ObjectMapperFactory that can serialize and deserialize from java object to Json and the location of
+   * karaf home where it will search for the Json file containing the metrics configurations.
+   * 
+   * @param oSGIMetricContributorService
+   *          the OSGIMetricContributorService that contains the metrics injected by bundles
+   * @param objectMapperFactory
+   *          an object that can serialize and deserialize from Java Objects to Json.
+   * @param karafHome
+   *          the location where it will search for the JSONFile containing the metrics configurations
+   */
   public MetricContributorServiceImpl( OSGIMetricContributorService oSGIMetricContributorService,
       ObjectMapperFactory objectMapperFactory, String karafHome ) {
     this.objectMapper = objectMapperFactory.createMapper();
@@ -61,6 +89,12 @@ public class MetricContributorServiceImpl implements MetricContributorService {
     this.jsonFile = findJsonFile( karafHome );
   }
 
+  /**
+   * Computes the absolute path of the Json file containing the metric configurations
+   * 
+   * @param karafHome the location to search for the file
+   * @return the absolute path of the Json file containing the metric configurations
+   */
   public static final String findJsonFile( String karafHome ) {
     String jsonFile;
     if ( karafHome != null ) {
@@ -73,6 +107,10 @@ public class MetricContributorServiceImpl implements MetricContributorService {
     return jsonFile;
   }
 
+  /**
+   * 
+   * @return the absolute path of the Json file containing the metric configurations
+   */
   public String getJsonFile() {
     return jsonFile;
   }
