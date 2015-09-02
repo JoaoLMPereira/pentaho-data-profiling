@@ -133,6 +133,10 @@ public class PercentileMetricContributor implements MetricManagerContributor {
     }
   }
 
+  public PercentileMetricContributor clone(){
+	  return new PercentileMetricContributor();
+  }
+  
   public List<ProfileFieldProperty> profileFieldProperties() {
     List<ProfileFieldProperty> result = new ArrayList<ProfileFieldProperty>( percentileDefinitions.size() );
     for ( PercentileDefinition percentileDefinition : percentileDefinitions ) {

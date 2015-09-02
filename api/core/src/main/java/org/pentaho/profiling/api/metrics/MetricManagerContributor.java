@@ -25,6 +25,7 @@ package org.pentaho.profiling.api.metrics;
 import org.pentaho.profiling.api.MutableProfileFieldValueType;
 import org.pentaho.profiling.api.ProfileFieldProperty;
 import org.pentaho.profiling.api.ProfileFieldValueType;
+import org.pentaho.profiling.api.PublicCloneable;
 import org.pentaho.profiling.api.action.ProfileActionException;
 import org.pentaho.profiling.api.metrics.field.DataSourceFieldValue;
 
@@ -35,7 +36,7 @@ import java.util.Set;
  * Interface to allow for easy implementation of metric contributors that only care about one field (and one type) at a
  * time
  */
-public interface MetricManagerContributor {
+public interface MetricManagerContributor extends Cloneable, PublicCloneable {
   /**
    * Gets the name that will be shown to the user for the metric contributor
    *
@@ -92,4 +93,7 @@ public interface MetricManagerContributor {
    * @return the ProfileFieldProperty objects that describe what the contributor is contributing
    */
   public List<ProfileFieldProperty> profileFieldProperties();
+  
+  @Override
+  public MetricManagerContributor clone();
 }

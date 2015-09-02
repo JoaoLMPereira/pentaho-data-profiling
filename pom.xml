@@ -50,6 +50,7 @@
   </scm>
   
   <properties>
+    <karaf.version>3.0.3</karaf.version>
     <clearspring.analytics.stream.version>2.7.0</clearspring.analytics.stream.version>
     <cxf.version>3.0.6</cxf.version>
     <felix.version>4.2.1</felix.version>

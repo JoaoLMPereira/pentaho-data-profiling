@@ -47,6 +47,7 @@ import java.util.Set;
 
 /**
  * Created by bryan on 2/3/15.
+ * Modified by jpereira
  */
 public class MetricManagerBasedMetricContributor implements MetricContributor {
   private static final Logger LOGGER = LoggerFactory.getLogger( MetricManagerBasedMetricContributor.class );
@@ -157,5 +158,12 @@ public class MetricManagerBasedMetricContributor implements MetricContributor {
       }
     }
     return result;
+  }
+  
+  @Override public MetricManagerBasedMetricContributor clone(){
+	  List<MetricManagerContributor> newMetricManagerContributors = new ArrayList<MetricManagerContributor>();
+	  for(MetricManagerContributor metricManagerContributor : metricManagerContributors)
+		  newMetricManagerContributors.add(metricManagerContributor.clone());
+	  return new MetricManagerBasedMetricContributor(newMetricManagerContributors);
   }
 }

@@ -64,6 +64,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by bryan on 3/5/15.
+ * Modified by jpereira.
  */
 public class AggregateProfileImpl implements AggregateProfile {
   private static final Logger LOGGER = LoggerFactory.getLogger( AggregateProfileImpl.class );
@@ -102,9 +103,12 @@ public class AggregateProfileImpl implements AggregateProfile {
           ProfileFieldProperties.PHYSICAL_NAME, ProfileFieldProperties.FIELD_TYPE,
           ProfileFieldProperties.COUNT_FIELD );
         List<ProfileFieldProperty> profileFieldProperties = new ArrayList<ProfileFieldProperty>( intrinsicProperties );
+        Set<ProfileFieldProperty> addedProperties = new HashSet<ProfileFieldProperty>();
         for ( MetricContributor metricContributor : metricContributorList ) {
           for ( ProfileFieldProperty profileFieldProperty : metricContributor.getProfileFieldProperties() ) {
-            profileFieldProperties.add( profileFieldProperty );
+            if ( addedProperties.add( profileFieldProperty ) ) {
+              profileFieldProperties.add( profileFieldProperty );
+            }
           }
         }
         profileStatus.setProfileFieldProperties( profileFieldProperties );
@@ -119,6 +123,8 @@ public class AggregateProfileImpl implements AggregateProfile {
           if ( childProfileIdSet.contains( notificationObject.getId() ) ) {
             commitStrategy.eventProcessed();
           }
+        } catch ( Exception e ) {
+          LOGGER.error( e.getMessage(), e );
         } finally {
           readLock.unlock();
         }
@@ -172,6 +178,8 @@ public class AggregateProfileImpl implements AggregateProfile {
       for ( String profileId : childProfileIdList ) {
         result.add( profilingService.getProfile( profileId ) );
       }
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
     } finally {
       readLock.unlock();
     }
@@ -263,6 +271,8 @@ public class AggregateProfileImpl implements AggregateProfile {
         } else {
           LOGGER.warn( "Tried to add same child profile id more than once: " + profileId );
         }
+      } catch ( Exception e ) {
+        LOGGER.error( e.getMessage(), e );
       } finally {
         writeLock.unlock();
       }

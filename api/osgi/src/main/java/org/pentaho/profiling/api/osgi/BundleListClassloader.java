@@ -30,7 +30,11 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.karaf.kar.KarService;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,13 +42,24 @@ import java.util.Set;
 
 /**
  * Created by bryan on 4/13/15.
+ * Modified by jpereira.
  */
 public class BundleListClassloader extends ClassLoader {
+  private static final String KAR_DEPLOY_FOLDER_NAME = "kar_deploy";
+
   private final BundleContext bundleContext;
   private final List<Class> servicesToTrack;
   private volatile List<Bundle> bundles;
+  private static final Logger LOGGER = LoggerFactory.getLogger( BundleListClassloader.class );
 
   public BundleListClassloader( BundleContext bundleContext, List<Class> servicesToTrack ) {
+    this( bundleContext, servicesToTrack, null );
+  }
+
+  public BundleListClassloader( BundleContext bundleContext, List<Class> servicesToTrack, KarService karService ) {
+    if ( karService != null )
+      installDeployedKars( karService );
+
     this.bundleContext = bundleContext;
     this.servicesToTrack = servicesToTrack;
     List<ServiceTracker> serviceTrackers = new ArrayList<ServiceTracker>( servicesToTrack.size() );
@@ -79,6 +94,21 @@ public class BundleListClassloader extends ClassLoader {
           }
         }
       } );
+    }
+  }
+
+  private void installDeployedKars( KarService karService ) {
+    String karafHome = System.getProperty( "karaf.home" );
+    File karDeployFolder = new File( karafHome + "/" + KAR_DEPLOY_FOLDER_NAME );
+    if ( karDeployFolder.isDirectory() ) {
+      File[] karFiles = karDeployFolder.listFiles();
+      if ( karFiles != null )
+        for ( File karFile : karFiles )
+          try {
+            karService.install( karFile.toURI() );
+          } catch ( Exception e ) {
+            LOGGER.error(e.getMessage(),e);
+          }
     }
   }
 

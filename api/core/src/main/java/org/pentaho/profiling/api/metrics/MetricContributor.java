@@ -25,6 +25,7 @@ package org.pentaho.profiling.api.metrics;
 import org.pentaho.profiling.api.MutableProfileStatus;
 import org.pentaho.profiling.api.ProfileFieldProperty;
 import org.pentaho.profiling.api.ProfileStatus;
+import org.pentaho.profiling.api.PublicCloneable;
 import org.pentaho.profiling.api.action.ProfileActionException;
 import org.pentaho.profiling.api.metrics.field.DataSourceFieldValue;
 
@@ -35,7 +36,7 @@ import java.util.List;
  * <p/>
  * Created by mhall on 23/01/15.
  */
-public interface MetricContributor {
+public interface MetricContributor extends Cloneable, PublicCloneable {
 
   /**
    * Process a field value
@@ -69,4 +70,6 @@ public interface MetricContributor {
    * @return a list of profile field properties
    */
   List<ProfileFieldProperty> getProfileFieldProperties();
+  
+  MetricContributor clone();
 }

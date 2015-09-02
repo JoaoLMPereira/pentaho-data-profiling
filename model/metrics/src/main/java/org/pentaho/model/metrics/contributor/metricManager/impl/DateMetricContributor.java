@@ -39,6 +39,7 @@ import java.util.Set;
 
 /**
  * Created by mhall on 27/01/15.
+ * Modified by jpereira.
  */
 public class DateMetricContributor extends BaseMetricManagerContributor implements MetricManagerContributor {
   public static final String SIMPLE_NAME = DateMetricContributor.class.getSimpleName();
@@ -75,6 +76,11 @@ public class DateMetricContributor extends BaseMetricManagerContributor implemen
 
   @Override public List<ProfileFieldProperty> profileFieldProperties() {
     return Arrays.asList( NumericMetricContributor.MIN, NumericMetricContributor.MAX );
+  }
+
+  @Override
+  public DateMetricContributor clone() {
+    return new DateMetricContributor();
   }
 
   @Override public boolean equals( Object obj ) {
