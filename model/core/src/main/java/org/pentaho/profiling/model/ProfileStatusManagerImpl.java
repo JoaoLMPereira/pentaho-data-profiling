@@ -34,6 +34,8 @@ import org.pentaho.profiling.api.ProfileStatusReadOperation;
 import org.pentaho.profiling.api.ProfileStatusWriteOperation;
 import org.pentaho.profiling.api.action.ProfileActionExceptionWrapper;
 import org.pentaho.profiling.api.configuration.ProfileConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -44,6 +46,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by bryan on 9/29/14.
  */
 public class ProfileStatusManagerImpl implements ProfileStatusManager {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger( ProfileStatusManagerImpl.class );
   private final ProfilingServiceImpl profilingService;
   private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
   private final Semaphore transactionSemaphore = new Semaphore( 1 );
@@ -60,6 +64,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatusReadOperation.read( profileStatus );
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -74,6 +81,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
       profileStatus = new ProfileStatusImpl( newStatus );
       profilingService.notify( profileStatus );
       return result;
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.writeLock().unlock();
       transactionSemaphore.release();
@@ -104,6 +114,8 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
       transaction = null;
       profilingService.notify( profileStatus );
       transactionSemaphore.release();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
     } finally {
       readWriteLock.writeLock().unlock();
     }
@@ -122,6 +134,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getProfileState();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -131,6 +146,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getId();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -144,6 +162,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getProfileConfiguration();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -153,6 +174,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getFields();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -162,6 +186,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getField( physicalName );
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -171,6 +198,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getTotalEntities();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -180,6 +210,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getStatusMessages();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -189,6 +222,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getOperationError();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -198,6 +234,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getProfileFieldProperties();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return null;
     } finally {
       readWriteLock.readLock().unlock();
     }
@@ -207,6 +246,9 @@ public class ProfileStatusManagerImpl implements ProfileStatusManager {
     readWriteLock.readLock().lock();
     try {
       return profileStatus.getSequenceNumber();
+    } catch ( Exception e ) {
+      LOGGER.error( e.getMessage(), e );
+      return -1;
     } finally {
       readWriteLock.readLock().unlock();
     }

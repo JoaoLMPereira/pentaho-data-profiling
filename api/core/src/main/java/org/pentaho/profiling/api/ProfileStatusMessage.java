@@ -25,6 +25,7 @@ package org.pentaho.profiling.api;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -67,5 +68,9 @@ public class ProfileStatusMessage {
   @XmlElement
   public String getMessageKey() {
     return messageKey;
+  }
+  
+  public String toString(){
+	  return "messagePath: "+messagePath+" messageKey: "+messageKey+" messageVariables: "+Arrays.toString(messageVariables.toArray());
   }
 }
