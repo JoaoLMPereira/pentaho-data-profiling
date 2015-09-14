@@ -24,8 +24,15 @@ package org.pentaho.profiling.api;
 
 /**
  * Created by bryan on 4/30/15.
+ * Modified by jpereira
  */
 public interface MutableProfileField extends ProfileField {
+  MutableProfileField getProfileSubField( String physicalName );
+
+  void putProfileSubField( String physicalName, ProfileField profileSubField );
+
+  MutableProfileField getOrCreateProfileSubField( String physicalName, String logicalName );
+
   MutableProfileFieldValueType getValueTypeMetrics( String name );
 
   void putValueTypeMetrics( String name, ProfileFieldValueType profileFieldValueType );

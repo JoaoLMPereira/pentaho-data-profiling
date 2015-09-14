@@ -28,6 +28,7 @@ import java.util.Set;
 
 /**
  * Created by bryan on 4/30/15.
+ * Modified by jpereira
  */
 public interface ProfileField extends PublicCloneable {
   String getPhysicalName();
@@ -41,4 +42,8 @@ public interface ProfileField extends PublicCloneable {
   ProfileFieldValueType getType( String name );
 
   Set<String> typeKeys();
+
+  List<ProfileField> getProfileSubFields();
+
+  ProfileField getProfileSubField( String name );
 }

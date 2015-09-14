@@ -55,6 +55,7 @@ import java.util.UUID;
 
 /**
  * Created by bryan on 7/31/14.
+ * Modified by jpereira
  */
 @Produces( { MediaType.APPLICATION_JSON } )
 @Consumes( { MediaType.APPLICATION_JSON } )
@@ -152,12 +153,12 @@ public class ProfilingServiceWebserviceImpl implements ProfilingService {
   @GET
   @Path( "/" )
   @SuccessResponseCode( 200 )
-  public List<ProfileStatus> getActiveProfilesWebservice() {
+  public List<ProfileStatusDTO> getActiveProfilesWebservice() {
     List<ProfileStatusReader> profileStatusReaders = getActiveProfiles();
-    List<ProfileStatus> result = new ArrayList<ProfileStatus>( profileStatusReaders.size() );
+    List<ProfileStatusDTO> result = new ArrayList<ProfileStatusDTO>( profileStatusReaders.size() );
     for ( ProfileStatusReader profileStatusManager : profileStatusReaders ) {
-      result.add( profileStatusManager.read( new ProfileStatusReadOperation<ProfileStatus>() {
-        @Override public ProfileStatus read( ProfileStatus profileStatus ) {
+      result.add( profileStatusManager.read( new ProfileStatusReadOperation<ProfileStatusDTO>() {
+        @Override public ProfileStatusDTO read( ProfileStatus profileStatus ) {
           return new ProfileStatusDTO( profileStatus );
         }
       } ) );
@@ -172,7 +173,7 @@ public class ProfilingServiceWebserviceImpl implements ProfilingService {
    */
   public Example getActiveProfilesWebserviceExample() {
     List<ProfileStatus> provide = sampleProviderManager.provide( ProfileStatus.class );
-    ArrayList<ProfileStatus> response = new ArrayList<ProfileStatus>( provide.size() );
+    ArrayList<ProfileStatusDTO> response = new ArrayList<ProfileStatusDTO>( provide.size() );
     for ( ProfileStatus profileStatus : provide ) {
       response.add( new ProfileStatusDTO( profileStatus ) );
     }
@@ -197,9 +198,9 @@ public class ProfilingServiceWebserviceImpl implements ProfilingService {
   @GET
   @Path( "/{profileId}" )
   @SuccessResponseCode( 200 )
-  public ProfileStatus getProfileUpdateWebservice( @PathParam( "profileId" ) String profileId ) {
-    return getProfileUpdate( profileId ).read( new ProfileStatusReadOperation<ProfileStatus>() {
-      @Override public ProfileStatus read( ProfileStatus profileStatus ) {
+  public ProfileStatusDTO getProfileUpdateWebservice( @PathParam( "profileId" ) String profileId ) {
+    return getProfileUpdate( profileId ).read( new ProfileStatusReadOperation<ProfileStatusDTO>() {
+      @Override public ProfileStatusDTO read( ProfileStatus profileStatus ) {
         return new ProfileStatusDTO( profileStatus );
       }
     } );

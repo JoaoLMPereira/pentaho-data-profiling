@@ -54,6 +54,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Created by bryan on 8/15/14.
+ * Modified by jpereira
  */
 public class ProfilingServiceWebserviceImplTest {
   private ProfilingService delegate;
@@ -98,7 +99,7 @@ public class ProfilingServiceWebserviceImplTest {
     profiles.add( result );
     when( delegate.getActiveProfiles() ).thenReturn( profiles );
     assertEquals( 1, webservice.getActiveProfilesWebservice().size() );
-    ProfileStatus webserviceResult = webservice.getActiveProfilesWebservice().get( 0 );
+    ProfileStatusDTO webserviceResult = webservice.getActiveProfilesWebservice().get( 0 );
     assertTrue( webserviceResult instanceof ProfileStatusDTO );
     assertEquals( id, webserviceResult.getId() );
   }
@@ -115,7 +116,7 @@ public class ProfilingServiceWebserviceImplTest {
       }
     } );
     when( delegate.getProfileUpdate( id ) ).thenReturn( result );
-    ProfileStatus profileUpdateWebservice = webservice.getProfileUpdateWebservice( id );
+    ProfileStatusDTO profileUpdateWebservice = webservice.getProfileUpdateWebservice( id );
     assertEquals( id, profileUpdateWebservice.getId() );
     assertTrue( profileUpdateWebservice instanceof ProfileStatusDTO );
   }
