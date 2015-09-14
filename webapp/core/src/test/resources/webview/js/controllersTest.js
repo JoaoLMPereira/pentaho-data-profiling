@@ -63,7 +63,7 @@ define([
   'services/defaultMetricConfigViewService'
 ], function (angular) {
 
-  var PROFILE_STATUS_NOTIF_STYPE = "org.pentaho.profiling.api.ProfileStatus";
+  var PROFILE_STATUS_DTO_NOTIF_STYPE = "org.pentaho.profiling.api.dto.ProfileStatusDTO";
   var PROFILE_GETAGGPROF_URL = "../cxf/aggregate";
   var PROFILE_GETPROF_URL = "../cxf/profile";
   var PROFILE_GETOPERS_URL = "../cxf/profile/operations/";
@@ -98,7 +98,7 @@ define([
       spyOn($scope.profileAppService.profileService.profileResource, 'getActiveProfiles').andCallThrough();
       spyOn($scope.profileAppService.profileService.aggregateProfileResource, 'getAggregates').andCallThrough();
     }));
-
+    debugger;
     describe("scope object initialization -", function () {
 
       it("should have a property 'isOrderReversed' with value false", function () {
@@ -114,14 +114,14 @@ define([
       });
 
       it("should register for a ProfileStatus notification for id 'ABCD'", function () {
-        notificationService.verifyRegistrationExists(PROFILE_STATUS_NOTIF_STYPE, "ABCD");
+        notificationService.verifyRegistrationExists(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD");
       });
     });
 
     describe("when a ProfileStatus notification arrives -", function () {
 
       it("should set the scope property 'profileId' to 'ABCD'", function () {
-        notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+        notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
           id: "ABCD",
           dataSourceReference: {
             id: 'abc',
@@ -154,7 +154,7 @@ define([
 
         var statusMessages = [currentOper];
 
-        notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+        notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
           id: "ABCD",
           dataSourceReference: {
             id: 'abc',
@@ -188,7 +188,7 @@ define([
           ]
         };
 
-        notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+        notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
           id: "ABCD",
           dataSourceReference: {
             id: 'abc',
@@ -213,7 +213,7 @@ define([
       describe("the profile field columns, determined based on the notification's 'profileFieldProperties' and 'fields' - ", function () {
 
         it("should be an array", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -232,7 +232,7 @@ define([
         });
 
         it("should only contain columns for which at least on field has a value for", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -253,7 +253,7 @@ define([
         });
 
         it("should contain columns with all expected attributes", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, 'ABCD', {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, 'ABCD', {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -275,7 +275,7 @@ define([
         });
 
         it("should contain columns for used multi-level properties", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, 'ABCD', {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, 'ABCD', {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -294,7 +294,7 @@ define([
         });
 
         it("should not contain columns for properties in 'fields' but not in 'profileFieldProperties'", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, 'ABCD', {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, 'ABCD', {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -312,7 +312,7 @@ define([
         });
 
         it("should contain columns in the order of 'profileFieldProperties'", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, 'ABCD', {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, 'ABCD', {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -341,7 +341,7 @@ define([
       describe("the profile field rows, determined based on the notification's 'profileFieldProperties' and 'fields' - ", function () {
 
         it("should be an array", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -360,7 +360,7 @@ define([
         });
 
         it("should be in the number of one row per field, when all fields' properties have a single value", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -380,7 +380,7 @@ define([
         });
 
         it("should have properties for every column, when the corresponding field has the property", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -413,7 +413,7 @@ define([
         });
 
         it("should not have a property for a columns, when the corresponding field does not have it", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -440,7 +440,7 @@ define([
         });
 
         it("should be in the number of two rows for a field having two values in just one of the columns", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [
@@ -476,7 +476,7 @@ define([
         });
 
         it("should be in the number of six rows for a field having two values in a column and three values in another column", function () {
-          notificationService.notify(PROFILE_STATUS_NOTIF_STYPE, "ABCD", {
+          notificationService.notify(PROFILE_STATUS_DTO_NOTIF_STYPE, "ABCD", {
             id: "ABCD",
             dataSourceReference: {id: 'abc', dataSourceProvider: 'cde'},
             profileFieldProperties: [

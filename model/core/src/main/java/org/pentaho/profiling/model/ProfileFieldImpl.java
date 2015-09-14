@@ -38,29 +38,43 @@ import static org.pentaho.profiling.api.util.PublicCloneableUtil.copyMap;
 
 /**
  * Created by bryan on 4/30/15.
+ * Modified by jpereira
  */
 public class ProfileFieldImpl implements ProfileField {
+  protected Map<String, ProfileField> profileSubFields;
   protected Map<String, ProfileFieldValueType> types;
   protected Map<String, String> properties;
   private String physicalName;
   private String logicalName;
 
   public ProfileFieldImpl( String physicalName, String logicalName ) {
-    this( physicalName, logicalName, new HashMap<String, String>(), new HashMap<String, ProfileFieldValueType>() );
+    this( physicalName, logicalName, new HashMap<String, ProfileField>(), new HashMap<String, String>(), new HashMap<String, ProfileFieldValueType>() );
   }
 
   public ProfileFieldImpl( ProfileField profileField ) {
-    this( profileField.getPhysicalName(), profileField.getLogicalName(), profileField.getProperties(),
-      mapFromList( profileField.getTypes() ) );
+    this( profileField.getPhysicalName(), profileField.getLogicalName(), subFieldsMapFromList( profileField
+        .getProfileSubFields() ), profileField.getProperties(), mapFromList( profileField.getTypes() ) );
   }
 
-  public ProfileFieldImpl( String physicalName, String logicalName, Map<String, String> properties,
-                           Map<String, ProfileFieldValueType> types ) {
+  public ProfileFieldImpl( String physicalName, String logicalName, Map<String, ProfileField> profileSubFields,
+      Map<String, String> properties, Map<String, ProfileFieldValueType> types ) {
     this.physicalName = physicalName;
     this.logicalName = logicalName;
+    this.profileSubFields = new HashMap<String, ProfileField>( profileSubFields );
     this.properties = new HashMap<String, String>( properties );
     this.types = new HashMap<String, ProfileFieldValueType>();
     copyMap( types, this.types );
+  }
+
+  private static Map<String, ProfileField> subFieldsMapFromList( List<ProfileField> profileSubFields ) {
+    if ( profileSubFields == null ) {
+      return null;
+    }
+    TreeMap<String, ProfileField> treeMap = new TreeMap<String, ProfileField>();
+    for ( ProfileField profileSubField : profileSubFields ) {
+      treeMap.put( profileSubField.getPhysicalName(), profileSubField );
+    }
+    return treeMap;
   }
 
   private static Map<String, ProfileFieldValueType> mapFromList( List<ProfileFieldValueType> profileFieldValueTypes ) {
@@ -80,6 +94,14 @@ public class ProfileFieldImpl implements ProfileField {
 
   @Override public String getLogicalName() {
     return logicalName;
+  }
+
+  @Override public ProfileField getProfileSubField( String physicalName ) {
+    return profileSubFields.get( physicalName );
+  }
+
+  @Override public List<ProfileField> getProfileSubFields() {
+    return new ArrayList<ProfileField>( profileSubFields.values() );
   }
 
   @Override public List<ProfileFieldValueType> getTypes() {

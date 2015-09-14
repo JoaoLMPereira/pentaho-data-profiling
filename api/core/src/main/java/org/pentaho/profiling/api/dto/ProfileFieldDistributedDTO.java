@@ -30,61 +30,67 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
- * Created by bryan on 4/30/15.
- * Modified by jpereira
+ * Created by jpereira on 8/9/15.
  */
-public class ProfileFieldDTO  {
+public class ProfileFieldDistributedDTO implements ProfileField {
   private String physicalName;
   private String logicalName;
+  private List<ProfileField> profileSubFields;
+  private Map<String,ProfileField> profileSubFieldsMap;
   private Map<String, String> properties;
-  private List<ProfileFieldValueTypeDTO> types;
-  private Map<String, ProfileFieldValueTypeDTO> profileFieldValueTypeMap;
+  private List<ProfileFieldValueType> types;
+  private Map<String, ProfileFieldValueType> profileFieldValueTypeMap;
 
-  public ProfileFieldDTO() {
+  public ProfileFieldDistributedDTO() {
 
   }
 
-  public ProfileFieldDTO( ProfileField profileField ) {
+  public ProfileFieldDistributedDTO( ProfileField profileField ) {
     this.physicalName = profileField.getPhysicalName();
     this.logicalName = profileField.getLogicalName();
+    this.profileSubFields = createSubFieldDtos(profileField.getProfileSubFields());
     Map<String, String> properties = profileField.getProperties();
     this.properties = properties == null ? null : new HashMap<String, String>( properties );
     this.types = createFieldDtos( profileField.getTypes() );
   }
 
-  public ProfileFieldDTO( ProfileField profileField, String nameToAppend, List<ProfileFieldDTO> result ) {
-    this.physicalName = nameToAppend  + profileField.getPhysicalName();
-    this.logicalName = nameToAppend  + profileField.getLogicalName();
-    Map<String, String> properties = profileField.getProperties();
-    this.properties = properties == null ? null : new HashMap<String, String>( properties );
-    this.types = createFieldDtos( profileField.getTypes() );
-    
-    createProfileSubFieldDtos(profileField.getProfileSubFields(),logicalName + ".",result);
-    }
-
-  private static List<ProfileFieldValueTypeDTO> createFieldDtos( List<ProfileFieldValueType> profileFieldValueTypes ) {
-    if ( profileFieldValueTypes == null ) {
+  private static Map<String, ProfileField> subFieldsMapFromList( List<ProfileField> profileSubFields ) {
+    if ( profileSubFields == null ) {
       return null;
     }
-    List<ProfileFieldValueTypeDTO> result = new ArrayList<ProfileFieldValueTypeDTO>( profileFieldValueTypes.size() );
-    for ( ProfileFieldValueType profileFieldValueType : profileFieldValueTypes ) {
-      result.add( new ProfileFieldValueTypeDTO( profileFieldValueType ) );
+    TreeMap<String, ProfileField> treeMap = new TreeMap<String, ProfileField>();
+    for ( ProfileField profileSubField : profileSubFields ) {
+      treeMap.put( profileSubField.getPhysicalName(), profileSubField);
+    }
+    return treeMap;
+  }
+  
+  private static List<ProfileField> createSubFieldDtos( List<ProfileField> profileSubFields ) {
+    if ( profileSubFields == null ) {
+      return null;
+    }
+    List<ProfileField> result = new ArrayList<ProfileField>( profileSubFields.size() );
+    for ( ProfileField profileSubField : profileSubFields ) {
+      result.add(new ProfileFieldDistributedDTO(profileSubField) );
     }
     return result;
   }
 
-  
-  private static void createProfileSubFieldDtos( List<ProfileField> profileField, String nameToAppend, List<ProfileFieldDTO> result) {
-    if ( profileField == null ) {
-      return;
+  private static List<ProfileFieldValueType> createFieldDtos( List<ProfileFieldValueType> profileFieldValueTypes ) {
+    if ( profileFieldValueTypes == null ) {
+      return null;
     }
-    for ( ProfileField profileSubField : profileField ) {
-      result.add( new ProfileFieldDTO( profileSubField,nameToAppend, result ) );
+    List<ProfileFieldValueType> result = new ArrayList<ProfileFieldValueType>( profileFieldValueTypes.size() );
+    for ( ProfileFieldValueType profileFieldValueType : profileFieldValueTypes ) {
+      result.add( new ProfileFieldValueTypeDistributedDTO( profileFieldValueType ) );
     }
+    return result;
   }
-  public String getPhysicalName() {
+
+  @Override public String getPhysicalName() {
     return physicalName;
   }
 
@@ -92,7 +98,7 @@ public class ProfileFieldDTO  {
     this.physicalName = physicalName;
   }
 
-  public String getLogicalName() {
+  @Override public String getLogicalName() {
     return logicalName;
   }
 
@@ -100,7 +106,7 @@ public class ProfileFieldDTO  {
     this.logicalName = logicalName;
   }
 
-  public Map<String, String> getProperties() {
+  @Override public Map<String, String> getProperties() {
     return properties;
   }
 
@@ -108,32 +114,55 @@ public class ProfileFieldDTO  {
     this.properties = properties;
   }
 
-  public List<ProfileFieldValueTypeDTO> getTypes() {
+  @Override public List<ProfileFieldValueType> getTypes() {
     return types;
   }
 
-  public void setTypes( List<ProfileFieldValueTypeDTO> types ) {
+  public void setTypes( List<ProfileFieldValueType> types ) {
     this.types = types;
     profileFieldValueTypeMap = null;
   }
 
-  public ProfileFieldValueTypeDTO getType( String name ) {
+  @Override public ProfileFieldValueType getType( String name ) {
     if ( types == null ) {
       return null;
     }
     if ( profileFieldValueTypeMap == null ) {
-      profileFieldValueTypeMap = new HashMap<String, ProfileFieldValueTypeDTO>();
-      for ( ProfileFieldValueTypeDTO profileFieldValueType : types ) {
+      profileFieldValueTypeMap = new HashMap<String, ProfileFieldValueType>();
+      for ( ProfileFieldValueType profileFieldValueType : types ) {
         profileFieldValueTypeMap.put( profileFieldValueType.getTypeName(), profileFieldValueType );
       }
     }
     return profileFieldValueTypeMap.get( name );
   }
 
-  public Set<String> typeKeys() {
+  @Override public Set<String> typeKeys() {
     return profileFieldValueTypeMap.keySet();
   }
+  
+  @Override public ProfileField getProfileSubField( String physicalName ) {
+    if ( profileSubFields == null ) {
+      return null;
+    }
+    
+    if(profileSubFieldsMap == null)
+      profileSubFieldsMap = subFieldsMapFromList(profileSubFields);
+    
+    return profileSubFieldsMap.get( physicalName );
+  }
 
+  @Override public List<ProfileField> getProfileSubFields() {
+    return new ArrayList<ProfileField>( profileSubFields);
+  }
+  
+  public void setProfileSubFields (List<ProfileField> profileSubFields) {
+    profileSubFieldsMap = null;
+    this.profileSubFields = profileSubFields;
+  }
+  
+  @Override public Object clone() {
+    return new ProfileFieldDistributedDTO( this );
+  }
 
   //OperatorWrap isn't helpful for autogenerated methods
   //CHECKSTYLE:OperatorWrap:OFF
@@ -145,7 +174,7 @@ public class ProfileFieldDTO  {
       return false;
     }
 
-    ProfileFieldDTO that = (ProfileFieldDTO) o;
+    ProfileFieldDistributedDTO that = (ProfileFieldDistributedDTO) o;
 
     if ( physicalName != null ? !physicalName.equals( that.physicalName ) : that.physicalName != null ) {
       return false;
@@ -154,6 +183,9 @@ public class ProfileFieldDTO  {
       return false;
     }
     if ( properties != null ? !properties.equals( that.properties ) : that.properties != null ) {
+      return false;
+    }
+    if ( profileSubFields != null ? !profileSubFields.equals( that.profileSubFields ) : that.profileSubFields != null ) {
       return false;
     }
     return !( types != null ? !types.equals( that.types ) :
@@ -165,17 +197,21 @@ public class ProfileFieldDTO  {
     int result = physicalName != null ? physicalName.hashCode() : 0;
     result = 31 * result + ( logicalName != null ? logicalName.hashCode() : 0 );
     result = 31 * result + ( properties != null ? properties.hashCode() : 0 );
+    result = 31 * result + ( profileSubFields != null ? profileSubFields.hashCode() : 0 );
     result = 31 * result + ( types != null ? types.hashCode() : 0 );
     return result;
   }
 
   @Override public String toString() {
-    return "ProfileFieldDTO{" +
+    return "ProfileFieldDistributedDTO{" +
       "physicalName='" + physicalName + '\'' +
       ", logicalName='" + logicalName + '\'' +
       ", properties=" + properties +
+      ", profileSubFields=" + profileSubFields +
       ", types=" + types +
       '}';
   }
   //CHECKSTYLE:OperatorWrap:ON
+
+
 }

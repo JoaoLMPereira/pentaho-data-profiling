@@ -31,6 +31,7 @@ import java.util.Map;
 
 /**
  * Created by bryan on 4/30/15.
+ * Modified by jpereira
  */
 public class MutableProfileFieldImpl extends ProfileFieldImpl implements MutableProfileField {
   public MutableProfileFieldImpl( String physicalName, String logicalName ) {
@@ -39,6 +40,40 @@ public class MutableProfileFieldImpl extends ProfileFieldImpl implements Mutable
 
   public MutableProfileFieldImpl( ProfileField profileField ) {
     super( profileField );
+  }
+
+  @Override public MutableProfileField getProfileSubField( String physicalName ) {
+    ProfileField profileSubField = profileSubFields.get( physicalName );
+    MutableProfileField result;
+    if ( profileSubField == null ) {
+      return null;
+    }
+    if ( profileSubField instanceof MutableProfileField ) {
+      return (MutableProfileField) profileSubField;
+    }
+    result = new MutableProfileFieldImpl( profileSubField );
+    profileSubFields.put( physicalName, result );
+    return result;
+  }
+
+  @Override public void putProfileSubField( String physicalName, ProfileField profileSubField ) {
+    profileSubFields.put( physicalName, new MutableProfileFieldImpl( profileSubField ) );
+  }
+
+  @Override public MutableProfileField getOrCreateProfileSubField( String physicalName, String logicalName ) {
+    ProfileField profileSubField = profileSubFields.get( physicalName );
+    MutableProfileField result;
+    if ( profileSubField == null ) {
+      result = new MutableProfileFieldImpl( physicalName, logicalName );
+    } else {
+      if ( profileSubField instanceof MutableProfileField ) {
+        return (MutableProfileField) profileSubField;
+      } else {
+        result = new MutableProfileFieldImpl( profileSubField );
+      }
+    }
+    profileSubFields.put( physicalName, result );
+    return result;
   }
 
   @Override public MutableProfileFieldValueType getValueTypeMetrics( String name ) {

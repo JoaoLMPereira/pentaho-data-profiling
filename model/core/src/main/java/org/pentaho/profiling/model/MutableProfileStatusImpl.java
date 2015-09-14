@@ -37,6 +37,7 @@ import java.util.TreeMap;
 
 /**
  * Created by bryan on 7/31/14.
+ * Modified by jpereira.
  */
 public class MutableProfileStatusImpl extends ProfileStatusImpl implements MutableProfileStatus {
   public MutableProfileStatusImpl( ProfileStatus profileStatus ) {
@@ -58,8 +59,11 @@ public class MutableProfileStatusImpl extends ProfileStatusImpl implements Mutab
     if ( profileField == null ) {
       result = new MutableProfileFieldImpl( physicalName, logicalName );
       fields.put( physicalName, result );
-    } else {
+    } else if ( profileField instanceof MutableProfileField ) {
       result = (MutableProfileField) profileField;
+    } else {
+      result = new MutableProfileFieldImpl( profileField );
+      fields.put( physicalName, result );
     }
     return result;
   }

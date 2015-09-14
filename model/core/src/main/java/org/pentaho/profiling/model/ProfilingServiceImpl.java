@@ -34,13 +34,13 @@ import org.pentaho.profiling.api.ProfileStatusWriteOperation;
 import org.pentaho.profiling.api.ProfilingService;
 import org.pentaho.profiling.api.configuration.DataSourceMetadata;
 import org.pentaho.profiling.api.configuration.ProfileConfiguration;
+import org.pentaho.profiling.api.dto.ProfileStatusDTO;
 import org.pentaho.profiling.api.metrics.MetricContributorService;
 import org.pentaho.profiling.api.util.Pair;
 import org.pentaho.osgi.notification.api.DelegatingNotifierImpl;
 import org.pentaho.osgi.notification.api.NotificationListener;
 import org.pentaho.osgi.notification.api.NotificationObject;
 import org.pentaho.osgi.notification.api.NotifierWithHistory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,9 +56,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by bryan on 7/31/14.
+ * Modified by jpereira.
  */
 public class ProfilingServiceImpl implements ProfilingService, NotifierWithHistory {
   public static final String PROFILE_STATUS_CANONICAL_NAME = ProfileStatus.class.getCanonicalName();
+  public static final String PROFILE_STATUS_DTO_CANONICAL_NAME = ProfileStatusDTO.class.getCanonicalName();
   public static final String PROFILING_SERVICE_CANONICAL_NAME = ProfilingService.class.getCanonicalName();
   private final Map<String, Profile> profileMap = new ConcurrentHashMap<String, Profile>();
   private final Map<String, ProfileStatusManager> profileStatusManagerMap = new ConcurrentHashMap<String,
@@ -67,7 +69,8 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
     NotificationObject>();
   private final DelegatingNotifierImpl delegatingNotifier =
     new DelegatingNotifierImpl(
-      new HashSet<String>( Arrays.asList( PROFILING_SERVICE_CANONICAL_NAME, PROFILE_STATUS_CANONICAL_NAME ) ), this );
+      new HashSet<String>( Arrays.asList( PROFILING_SERVICE_CANONICAL_NAME, PROFILE_STATUS_CANONICAL_NAME, PROFILE_STATUS_DTO_CANONICAL_NAME ) ), this );
+
   private final ExecutorService executorService;
   private final MetricContributorService metricContributorService;
   private final AtomicLong profilesSequence = new AtomicLong( 1L );
@@ -206,13 +209,31 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
     delegatingNotifier.unregister( notificationListener );
   }
 
+  /**
+   * The notify method notifies two objects, one is the raw updated ProfileStatus, the other is the ProfileStatusDTO of
+   * the first object.
+   * 
+   * TODO There are some doubts about the notification bundle behavior. I don't know if the NotificationObject is
+   * supposed to be filtered by its type before being send to services that did not register to objects type. Proper
+   * modifications should be done to prevent that both ProfileStauts and ProfileStatusDTO are sent to the same service.
+   */
   public void notify( ProfileStatus profileStatus ) {
-    NotificationObject notificationObject =
-      new NotificationObject( PROFILE_STATUS_CANONICAL_NAME, profileStatus.getId(),
-        profileStatus.getSequenceNumber(), profileStatus );
-    previousNotifications.put( profileStatus.getId(), notificationObject );
+    NotificationObject notificationObjectToContainer =
+        new NotificationObject( PROFILE_STATUS_CANONICAL_NAME, profileStatus.getId(), profileStatus.getSequenceNumber(),
+            profileStatus );
+    previousNotifications.put( profileStatus.getId(), notificationObjectToContainer );
     try {
-      delegatingNotifier.notify( notificationObject );
+      delegatingNotifier.notify( notificationObjectToContainer );
+    } catch ( Throwable e ) {
+      e.printStackTrace();
+    }
+
+    NotificationObject notificationObjectToWebapp =
+        new NotificationObject( PROFILE_STATUS_DTO_CANONICAL_NAME, profileStatus.getId(), profileStatus
+            .getSequenceNumber(), new ProfileStatusDTO( profileStatus ) );
+    previousNotifications.put( profileStatus.getId(), notificationObjectToWebapp );
+    try {
+      delegatingNotifier.notify( notificationObjectToWebapp );
     } catch ( Throwable e ) {
       e.printStackTrace();
     }

@@ -33,29 +33,26 @@ import org.pentaho.profiling.api.configuration.ProfileConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-
 /**
- * Created by bryan on 3/27/15.
- * Modified by jpereira
+ * Created by jpereira on 8/9/15.
  */
-public class ProfileStatusDTO {
+public class ProfileStatusDistributedDTO implements ProfileStatus {
   private ProfileState profileState;
   private String name;
   private String id;
   private ProfileConfiguration profileConfiguration;
-  private List<ProfileFieldDTO> fields;
+  private List<ProfileField> fields;
   private Long totalEntities;
   private List<ProfileStatusMessage> statusMessages;
   private ProfileActionExceptionWrapper operationError;
   private List<ProfileFieldProperty> profileFieldProperties;
   private long sequenceNumber;
 
-  public ProfileStatusDTO() {
+  public ProfileStatusDistributedDTO() {
     this( null, null, null, null, null, null, null, null, null, 0L );
   }
 
-  public ProfileStatusDTO( ProfileStatus profileStatus ) {
+  public ProfileStatusDistributedDTO( ProfileStatus profileStatus ) {
     this( profileStatus.getProfileState(), profileStatus.getName(), profileStatus.getId(),
       profileStatus.getProfileConfiguration(), createFieldDtos( profileStatus.getFields() ),
       profileStatus.getTotalEntities(),
@@ -63,9 +60,9 @@ public class ProfileStatusDTO {
       profileStatus.getSequenceNumber() );
   }
 
-  public ProfileStatusDTO( ProfileState profileState, String name, String id,
+  public ProfileStatusDistributedDTO( ProfileState profileState, String name, String id,
                            ProfileConfiguration profileConfiguration,
-                           List<ProfileFieldDTO> fields, Long totalEntities,
+                           List<ProfileField> fields, Long totalEntities,
                            List<ProfileStatusMessage> statusMessages,
                            ProfileActionExceptionWrapper operationError,
                            List<ProfileFieldProperty> profileFieldProperties, long sequenceNumber ) {
@@ -81,18 +78,18 @@ public class ProfileStatusDTO {
     this.sequenceNumber = sequenceNumber;
   }
 
-  private static List<ProfileFieldDTO> createFieldDtos( List<ProfileField> profileFields ) {
+  private static List<ProfileField> createFieldDtos( List<ProfileField> profileFields ) {
     if ( profileFields == null ) {
       return null;
     }
-    List<ProfileFieldDTO> result = new ArrayList<ProfileFieldDTO>( profileFields.size() );
+    List<ProfileField> result = new ArrayList<ProfileField>( profileFields.size() );
     for ( ProfileField profileField : profileFields ) {
-      result.add( new ProfileFieldDTO( profileField,"",result ) );
+      result.add( new ProfileFieldDistributedDTO( profileField ) );
     }
     return result;
   }
 
-  public String getName() {
+  @Override public String getName() {
     return name;
   }
 
@@ -100,8 +97,7 @@ public class ProfileStatusDTO {
     this.name = name;
   }
 
-  @XmlElement
-  public ProfileState getProfileState() {
+  @Override public ProfileState getProfileState() {
     return profileState;
   }
 
@@ -109,8 +105,7 @@ public class ProfileStatusDTO {
     this.profileState = profileState;
   }
 
-  @XmlElement
-  public String getId() {
+  @Override public String getId() {
     return id;
   }
 
@@ -118,8 +113,7 @@ public class ProfileStatusDTO {
     this.id = id;
   }
 
-  @XmlElement
-  public ProfileConfiguration getProfileConfiguration() {
+  @Override public ProfileConfiguration getProfileConfiguration() {
     return profileConfiguration;
   }
 
@@ -128,21 +122,19 @@ public class ProfileStatusDTO {
     this.profileConfiguration = profileConfiguration;
   }
 
-  @XmlElement
-  public List<ProfileFieldDTO> getFields() {
+  @Override public List<ProfileField> getFields() {
     return fields;
   }
 
-  public void setFields( List<ProfileFieldDTO> fields ) {
+  public void setFields( List<ProfileField> fields ) {
     this.fields = fields;
   }
 
-  public ProfileField getField( String physicalName ) {
+  @Override public ProfileField getField( String physicalName ) {
     return null;
   }
 
-  @XmlElement
-  public Long getTotalEntities() {
+  @Override public Long getTotalEntities() {
     return totalEntities;
   }
 
@@ -150,8 +142,7 @@ public class ProfileStatusDTO {
     this.totalEntities = totalEntities;
   }
 
-  @XmlElement
-  public List<ProfileStatusMessage> getStatusMessages() {
+  @Override public List<ProfileStatusMessage> getStatusMessages() {
     return statusMessages;
   }
 
@@ -159,8 +150,7 @@ public class ProfileStatusDTO {
     this.statusMessages = statusMessages;
   }
 
-  @XmlElement
-  public ProfileActionExceptionWrapper getOperationError() {
+  @Override public ProfileActionExceptionWrapper getOperationError() {
     return operationError;
   }
 
@@ -168,8 +158,7 @@ public class ProfileStatusDTO {
     this.operationError = operationError;
   }
 
-  @XmlElement
-  public List<ProfileFieldProperty> getProfileFieldProperties() {
+  @Override public List<ProfileFieldProperty> getProfileFieldProperties() {
     return profileFieldProperties;
   }
 
@@ -177,8 +166,7 @@ public class ProfileStatusDTO {
     this.profileFieldProperties = profileFieldProperties;
   }
 
-  @XmlElement
-  public long getSequenceNumber() {
+  @Override public long getSequenceNumber() {
     return sequenceNumber;
   }
 
@@ -186,8 +174,6 @@ public class ProfileStatusDTO {
     this.sequenceNumber = sequenceNumber;
   }
 
-
-  
   //OperatorWrap isn't helpful for autogenerated methods
   //CHECKSTYLE:OperatorWrap:OFF
   @Override public boolean equals( Object o ) {
@@ -198,7 +184,7 @@ public class ProfileStatusDTO {
       return false;
     }
 
-    ProfileStatusDTO that = (ProfileStatusDTO) o;
+    ProfileStatusDistributedDTO that = (ProfileStatusDistributedDTO) o;
 
     if ( sequenceNumber != that.sequenceNumber ) {
       return false;
@@ -248,7 +234,7 @@ public class ProfileStatusDTO {
   }
 
   @Override public String toString() {
-    return "ProfileStatusDTO{" +
+    return "ProfileStatusDistributedDTO{" +
       "profileState=" + profileState +
       ", name='" + name + '\'' +
       ", id='" + id + '\'' +
@@ -264,7 +250,7 @@ public class ProfileStatusDTO {
   //CHECKSTYLE:OperatorWrap:ON
 
 
-//  public Object clone() throws CloneNotSupportedException {
-//    return new ProfileStatusDTO( this );
-//  }
+  @Override public Object clone() {
+    return new ProfileStatusDistributedDTO( this );
+  }
 }
