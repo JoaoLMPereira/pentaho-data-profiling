@@ -36,10 +36,21 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * MutableProfileStatusImpl implements the internal functionalities expected for a object of MutableProfileStatus.
+ * Moreover, it extends from ProfileStatusImpl which already has the expected functionalities for a ProfileStatus object
+ * from which MutableProfileStatusImpl extends
+ * <p>
  * Created by bryan on 7/31/14.
- * Modified by jpereira.
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class MutableProfileStatusImpl extends ProfileStatusImpl implements MutableProfileStatus {
+  /**
+   * Creates a MutableProfileStatusImpl with the same information as the profileStatus
+   * @param profileStatus a ProfileStatus which variables are used to initialize a MutableProfileStatusImpl
+   */
   public MutableProfileStatusImpl( ProfileStatus profileStatus ) {
     super( profileStatus );
     Map<String, ProfileField> profileFieldMap = new TreeMap<String, ProfileField>();

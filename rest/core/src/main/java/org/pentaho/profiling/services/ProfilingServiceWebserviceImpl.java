@@ -54,9 +54,16 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * ProfilingServiceWebserviceImpl declares endpoints and implements its functionalities need to external applications
+ * communicate with a ProfilingService
+ * <p>
  * Created by bryan on 7/31/14.
- * Modified by jpereira
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
+
 @Produces( { MediaType.APPLICATION_JSON } )
 @Consumes( { MediaType.APPLICATION_JSON } )
 @WebService
@@ -66,6 +73,16 @@ public class ProfilingServiceWebserviceImpl implements ProfilingService {
   private final ProfilingService delegate;
   private final MetricContributorService metricContributorService;
 
+  /**
+   * Constructs a ProfilingServiceWebserviceImpl
+   * 
+   * @param sampleProviderManager
+   *          TODO JavaDoc
+   * @param delegate
+   *          a ProfilingService to be accessed by external applications
+   * @param metricContributorService
+   *          a service that provides metric contributors
+   */
   public ProfilingServiceWebserviceImpl( SampleProviderManager sampleProviderManager, ProfilingService delegate,
                                          MetricContributorService metricContributorService ) {
     this.sampleProviderManager = sampleProviderManager;

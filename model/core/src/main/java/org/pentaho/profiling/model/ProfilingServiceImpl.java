@@ -55,12 +55,27 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * ProfilingServiceImpl implements the internal functionalities expected for a object of ProfilingService. It also
+ * implements the NotifierWithHistory which allows other services to register for its provided services
+ * <p>
  * Created by bryan on 7/31/14.
- * Modified by jpereira.
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class ProfilingServiceImpl implements ProfilingService, NotifierWithHistory {
+  /**
+   * Name to register for ProfileStatus notifications
+   */
   public static final String PROFILE_STATUS_CANONICAL_NAME = ProfileStatus.class.getCanonicalName();
+  /**
+   * Name to register for ProfileStatusDTO notifications
+   */
   public static final String PROFILE_STATUS_DTO_CANONICAL_NAME = ProfileStatusDTO.class.getCanonicalName();
+  /**
+   * Name to register for the ProfilingService
+   */
   public static final String PROFILING_SERVICE_CANONICAL_NAME = ProfilingService.class.getCanonicalName();
   private final Map<String, Profile> profileMap = new ConcurrentHashMap<String, Profile>();
   private final Map<String, ProfileStatusManager> profileStatusManagerMap = new ConcurrentHashMap<String,
@@ -76,6 +91,12 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
   private final AtomicLong profilesSequence = new AtomicLong( 1L );
   private List<Pair<Integer, ProfileFactory>> factories = new ArrayList<Pair<Integer, ProfileFactory>>();
 
+  /**
+   * Constructs the ProfilingServiceImpl 
+   * 
+   * @param executorService a service that accepts tasks and executes them
+   * @param metricContributorService a service that provides metric contributors that produce metric values for the profile
+   */
   public ProfilingServiceImpl( ExecutorService executorService, MetricContributorService metricContributorService ) {
     this.executorService = executorService;
     this.metricContributorService = metricContributorService;
@@ -164,7 +185,9 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
   }
 
   @Override public void stopAll() {
-    for ( Profile profile : profileMap.values() ) { profile.stop(); }
+    for ( Profile profile : profileMap.values() ) {
+      profile.stop();
+    }
   }
 
   @Override public boolean isRunning( String profileId ) {
@@ -210,12 +233,15 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
   }
 
   /**
-   * The notify method notifies two objects, one is the raw updated ProfileStatus, the other is the ProfileStatusDTO of
-   * the first object.
+   * The notify method receives a ProfileStatus and notifies two objects, one is the raw updated ProfileStatus, the
+   * other is the ProfileStatusDTO of the first object.
    * 
    * TODO There are some doubts about the notification bundle behavior. I don't know if the NotificationObject is
    * supposed to be filtered by its type before being send to services that did not register to objects type. Proper
    * modifications should be done to prevent that both ProfileStauts and ProfileStatusDTO are sent to the same service.
+   * 
+   * @param profileStatus
+   *          the ProfileStatus object to be the notification to other services
    */
   public void notify( ProfileStatus profileStatus ) {
     NotificationObject notificationObjectToContainer =
@@ -239,6 +265,12 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
     }
   }
 
+  /**
+   * Adds a new profile factory to this ProfilingService with a ranking number, this method is thread safe.
+   * 
+   * @param profileFactory the profile factory to be added
+   * @param properties a map containing properties, where one can be the rank
+   */
   public void profileFactoryAdded( ProfileFactory profileFactory, Map properties ) {
     Integer ranking = (Integer) properties.get( "service.ranking" );
     if ( ranking == null ) {
@@ -259,6 +291,12 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
     }
   }
 
+  /**
+   * Removes a profile factory from this ProfilingService, this method is thread safe.
+   * 
+   * @param profileFactory the profile factory to be removed
+   * @param properties a map containing properties
+   */
   public void profileFactoryRemoved( ProfileFactory profileFactory, Map properties ) {
     List<Pair<Integer, ProfileFactory>> newFactories = null;
     synchronized ( this.factories ) {
@@ -277,6 +315,12 @@ public class ProfilingServiceImpl implements ProfilingService, NotifierWithHisto
     return profileMap.get( profileId );
   }
 
+  /**
+   * This method registers an existing Profile and its ProfileStatusManager into this ProfilingServiceImpl
+   * 
+   * @param profile the existing Profile to register
+   * @param profileStatusManager the existing ProfileStatusManager associated to profile to register
+   */
   public void registerProfile( Profile profile, ProfileStatusManager profileStatusManager ) {
     profileMap.put( profile.getId(), profile );
     profileStatusManagerMap.put( profileStatusManager.getId(), profileStatusManager );

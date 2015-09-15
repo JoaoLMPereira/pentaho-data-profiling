@@ -31,10 +31,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
+
 /**
+ * ProfileFieldDTO is a data transfer object for ProfileField created to be sent to front-end applications.
+ * <p>
  * Created by bryan on 4/30/15.
- * Modified by jpereira
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
+
 public class ProfileFieldDTO  {
   private String physicalName;
   private String logicalName;
@@ -42,10 +50,16 @@ public class ProfileFieldDTO  {
   private List<ProfileFieldValueTypeDTO> types;
   private Map<String, ProfileFieldValueTypeDTO> profileFieldValueTypeMap;
 
+  /**
+   * Empty constructor, it is required for json serialization.
+   */
   public ProfileFieldDTO() {
-
   }
 
+  /**
+   * Creates a new ProfileFiledDTO containing the same information of profileField
+   * @param profileField the profile field used to create the data transfer object
+   */
   public ProfileFieldDTO( ProfileField profileField ) {
     this.physicalName = profileField.getPhysicalName();
     this.logicalName = profileField.getLogicalName();
@@ -53,7 +67,19 @@ public class ProfileFieldDTO  {
     this.properties = properties == null ? null : new HashMap<String, String>( properties );
     this.types = createFieldDtos( profileField.getTypes() );
   }
-
+  
+  /**
+   * Creates a new ProfileFiledDTO containing the same information of profileField.
+   * 
+   * @param profileField
+   *          the profile field used to create the data transfer object
+   * @param nameToAppend
+   *          its a suffix String to be appended to the ProfileFieldDTO name. It is used to distinguish sub fields from
+   *          root fields and to identify their parent field
+   * @param result
+   *          the list of ProfileFieldDTO maintained by ProfileStatusDTO, it is used to add the sub profile fields of
+   *          ProfileFields to ProfileStatusDTO because ProfileFieldDTO can not contain sub fields.
+   */
   public ProfileFieldDTO( ProfileField profileField, String nameToAppend, List<ProfileFieldDTO> result ) {
     this.physicalName = nameToAppend  + profileField.getPhysicalName();
     this.logicalName = nameToAppend  + profileField.getLogicalName();
@@ -84,39 +110,81 @@ public class ProfileFieldDTO  {
       result.add( new ProfileFieldDTO( profileSubField,nameToAppend, result ) );
     }
   }
+  
+  /**
+   * 
+   * @return the internal representation name for this ProfileFieldDTO
+   */
   public String getPhysicalName() {
     return physicalName;
   }
 
+  /**
+   *
+   * @param physicalName an internal representation name for this ProfileFieldDTO
+   */
   public void setPhysicalName( String physicalName ) {
     this.physicalName = physicalName;
   }
-
+  
+  /**
+   * 
+   * @return a suitable name for this ProfileFieldDTO to be shown to users
+   */
   public String getLogicalName() {
     return logicalName;
   }
 
+  /**
+   * 
+   * @param logicalName a suitable name for this ProfileFieldDTO to be shown to users
+   */
   public void setLogicalName( String logicalName ) {
     this.logicalName = logicalName;
   }
 
+  /**
+   * TODO JavaDoc
+   * @return
+   */
   public Map<String, String> getProperties() {
     return properties;
   }
 
+  /**
+   * TODO JavaDoc
+   * @return
+   */
   public void setProperties( Map<String, String> properties ) {
     this.properties = properties;
   }
 
+  /**
+   * 
+   * @return a list of ProfileFieldValueTypeDTO. A ProfileFieldValueTypeDTO contains the statistical values per value
+   *         type evaluated in this field.
+   */
   public List<ProfileFieldValueTypeDTO> getTypes() {
     return types;
   }
 
+  /**
+   * 
+   * @param types
+   *          a list of ProfileFieldValueTypeDTO. A ProfileFieldValueTypeDTO contains the statistical values per value
+   *          type evaluated in this field.
+   */
   public void setTypes( List<ProfileFieldValueTypeDTO> types ) {
     this.types = types;
     profileFieldValueTypeMap = null;
   }
 
+  /**
+   * 
+   * @param name
+   *          the type of the field values
+   * @return the ProfileFieldValueTypeDTO containing name as a value type
+   */
   public ProfileFieldValueTypeDTO getType( String name ) {
     if ( types == null ) {
       return null;
@@ -130,6 +198,11 @@ public class ProfileFieldDTO  {
     return profileFieldValueTypeMap.get( name );
   }
 
+  /**
+   * The value types evaluated for this field
+   * 
+   * @return a set of value types evaluated
+   */
   public Set<String> typeKeys() {
     return profileFieldValueTypeMap.keySet();
   }

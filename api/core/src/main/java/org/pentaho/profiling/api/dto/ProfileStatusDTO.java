@@ -36,8 +36,13 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
+ * ProfileStatusDTO is a data transfer object for ProfileStatus created to be sent to front-end applications.
+ * <p>
  * Created by bryan on 3/27/15.
- * Modified by jpereira
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class ProfileStatusDTO {
   private ProfileState profileState;
@@ -51,24 +56,55 @@ public class ProfileStatusDTO {
   private List<ProfileFieldProperty> profileFieldProperties;
   private long sequenceNumber;
 
+  /**
+   * Empty constructor, it is required for json serialization.
+   */
   public ProfileStatusDTO() {
     this( null, null, null, null, null, null, null, null, null, 0L );
   }
 
+  /**
+   * Creates a new ProfileStatusDTO containing the same information of profileStatus
+   * 
+   * @param profileStatus
+   *          the profile status used to create the data transfer object
+   */
   public ProfileStatusDTO( ProfileStatus profileStatus ) {
-    this( profileStatus.getProfileState(), profileStatus.getName(), profileStatus.getId(),
-      profileStatus.getProfileConfiguration(), createFieldDtos( profileStatus.getFields() ),
-      profileStatus.getTotalEntities(),
-      profileStatus.getStatusMessages(), profileStatus.getOperationError(), profileStatus.getProfileFieldProperties(),
-      profileStatus.getSequenceNumber() );
+    this( profileStatus.getProfileState(), profileStatus.getName(), profileStatus.getId(), profileStatus
+        .getProfileConfiguration(), createFieldDtos( profileStatus.getFields() ), profileStatus.getTotalEntities(),
+        profileStatus.getStatusMessages(), profileStatus.getOperationError(), profileStatus.getProfileFieldProperties(),
+        profileStatus.getSequenceNumber() );
   }
 
-  public ProfileStatusDTO( ProfileState profileState, String name, String id,
-                           ProfileConfiguration profileConfiguration,
-                           List<ProfileFieldDTO> fields, Long totalEntities,
-                           List<ProfileStatusMessage> statusMessages,
-                           ProfileActionExceptionWrapper operationError,
-                           List<ProfileFieldProperty> profileFieldProperties, long sequenceNumber ) {
+  /**
+   * Creates a new ProfileStatusDTO
+   * 
+   * @param profileState
+   *          a profile state that indicates if a Profile is active, stopped, discarder, finished with errors or
+   *          finished successfully
+   * @param name
+   *          a name for the profile status
+   * @param id
+   *          an id to identify the profile status
+   * @param profileConfiguration
+   *          a profile configuration that contains the metric contributors and metadata information
+   * @param fields
+   *          a list of ProfileField objects
+   * @param totalEntities
+   *          TODO
+   * @param statusMessages
+   *          a list of ProfileStatusMessage which contains information to the user
+   * @param operationError
+   *          a ProfileActionExceptionWrapper TODO JavaDoc
+   * @param profileFieldProperties
+   *          a list of ProfileFieldProperty which indicates the location of the metric values
+   * @param sequenceNumber
+   *          a sequence number, incremented after updates
+   */
+  public ProfileStatusDTO( ProfileState profileState, String name, String id, ProfileConfiguration profileConfiguration,
+      List<ProfileFieldDTO> fields, Long totalEntities, List<ProfileStatusMessage> statusMessages,
+      ProfileActionExceptionWrapper operationError, List<ProfileFieldProperty> profileFieldProperties,
+      long sequenceNumber ) {
     this.profileState = profileState;
     this.name = name;
     this.id = id;
@@ -87,105 +123,194 @@ public class ProfileStatusDTO {
     }
     List<ProfileFieldDTO> result = new ArrayList<ProfileFieldDTO>( profileFields.size() );
     for ( ProfileField profileField : profileFields ) {
-      result.add( new ProfileFieldDTO( profileField,"",result ) );
+      result.add( new ProfileFieldDTO( profileField, "", result ) );
     }
     return result;
   }
 
+  /**
+   * 
+   * @return the name of this profile status
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * 
+   * @param name
+   *          a name for the profile status
+   */
   public void setName( String name ) {
     this.name = name;
   }
 
+  /**
+   * 
+   * @return the profile state of this profile status that indicates if a Profile is active, stopped, discarder,
+   *         finished with errors or finished successfully
+   */
   @XmlElement
   public ProfileState getProfileState() {
     return profileState;
   }
 
+  /**
+   * 
+   * @param profileState
+   *          a profile state of this profile status that indicates if a Profile is active, stopped, discarder, finished
+   *          with errors or finished successfully
+   */
   public void setProfileState( ProfileState profileState ) {
     this.profileState = profileState;
   }
 
+  /**
+   * 
+   * @return the id that identifies the profile status
+   */
   @XmlElement
   public String getId() {
     return id;
   }
 
+  /**
+   * 
+   * @param id
+   *          an id to identify the profile status
+   */
   public void setId( String id ) {
     this.id = id;
   }
 
+  /**
+   * 
+   * @return the profile configuration of this profile status that contains the metric contributors and metadata
+   *         information
+   */
   @XmlElement
   public ProfileConfiguration getProfileConfiguration() {
     return profileConfiguration;
   }
 
-  public void setProfileConfiguration(
-    ProfileConfiguration profileConfiguration ) {
+  /**
+   * 
+   * @param profileConfiguration
+   *          a profile configuration that contains the metric contributors and metadata information
+   */
+  public void setProfileConfiguration( ProfileConfiguration profileConfiguration ) {
     this.profileConfiguration = profileConfiguration;
   }
 
+  /**
+   * 
+   * @return the list of ProfileField objects of this profile status
+   */
   @XmlElement
   public List<ProfileFieldDTO> getFields() {
     return fields;
   }
 
+  /**
+   * 
+   * @param fields
+   *          a list of ProfileField objects
+   */
   public void setFields( List<ProfileFieldDTO> fields ) {
     this.fields = fields;
   }
 
-  public ProfileField getField( String physicalName ) {
-    return null;
-  }
-
+  /**
+   * TODO JavaDoc
+   * 
+   * @return
+   */
   @XmlElement
   public Long getTotalEntities() {
     return totalEntities;
   }
 
+  /**
+   * TODO JavaDoc
+   * 
+   * @return
+   */
   public void setTotalEntities( Long totalEntities ) {
     this.totalEntities = totalEntities;
   }
 
+  /**
+   * 
+   * @return the list of ProfileStatusMessage of this profile status which contains information to the user
+   */
   @XmlElement
   public List<ProfileStatusMessage> getStatusMessages() {
     return statusMessages;
   }
 
+  /**
+   * 
+   * @param statusMessages
+   *          a list of ProfileStatusMessage which contains information to the user
+   */
   public void setStatusMessages( List<ProfileStatusMessage> statusMessages ) {
     this.statusMessages = statusMessages;
   }
 
+  /**
+   * TODO JavaDoC
+   * 
+   * @return
+   */
   @XmlElement
   public ProfileActionExceptionWrapper getOperationError() {
     return operationError;
   }
 
+  /**
+   * TODO JavaDoc
+   * 
+   * @param operationError
+   */
   public void setOperationError( ProfileActionExceptionWrapper operationError ) {
     this.operationError = operationError;
   }
 
+  /**
+   * 
+   * @return the list of ProfileFieldProperty of this profile status which indicate the location of the metric values
+   */
   @XmlElement
   public List<ProfileFieldProperty> getProfileFieldProperties() {
     return profileFieldProperties;
   }
 
+  /**
+   * 
+   * @param profileFieldProperties
+   *          a list of ProfileFieldProperty which indicates the location of the metric values
+   */
   public void setProfileFieldProperties( List<ProfileFieldProperty> profileFieldProperties ) {
     this.profileFieldProperties = profileFieldProperties;
   }
 
+  /**
+   * 
+   * @return the sequence number, incremented after updates
+   */
   @XmlElement
   public long getSequenceNumber() {
     return sequenceNumber;
   }
 
+  /**
+   * 
+   * @param sequenceNumber
+   *          a sequence number, incremented after updates
+   */
   public void setSequenceNumber( long sequenceNumber ) {
     this.sequenceNumber = sequenceNumber;
   }
-
 
   
   //OperatorWrap isn't helpful for autogenerated methods

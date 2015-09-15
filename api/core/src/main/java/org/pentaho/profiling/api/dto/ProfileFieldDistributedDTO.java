@@ -32,8 +32,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+
 /**
+ * The ProfileFieldDistributedDTO is the data transfer object for ProfileField objects to be sent to Containers in the
+ * context of HDFS profiling. It implements ProfileField interface and its intended to transfer the required data to
+ * rebuild a ProfileField.
+ * <p>
  * Created by jpereira on 8/9/15.
+ * 
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.0
  */
 public class ProfileFieldDistributedDTO implements ProfileField {
   private String physicalName;
@@ -44,10 +52,19 @@ public class ProfileFieldDistributedDTO implements ProfileField {
   private List<ProfileFieldValueType> types;
   private Map<String, ProfileFieldValueType> profileFieldValueTypeMap;
 
+  /**
+   * Empty constructor, it is required for json serialization.
+   */
   public ProfileFieldDistributedDTO() {
 
   }
 
+  /**
+   * Creates a new ProfileFieldDistributedDTO containing the same information of profileField
+   * 
+   * @param profileField
+   *          the profile field used to create the data transfer object
+   */
   public ProfileFieldDistributedDTO( ProfileField profileField ) {
     this.physicalName = profileField.getPhysicalName();
     this.logicalName = profileField.getLogicalName();
@@ -63,18 +80,18 @@ public class ProfileFieldDistributedDTO implements ProfileField {
     }
     TreeMap<String, ProfileField> treeMap = new TreeMap<String, ProfileField>();
     for ( ProfileField profileSubField : profileSubFields ) {
-      treeMap.put( profileSubField.getPhysicalName(), profileSubField);
+      treeMap.put( profileSubField.getPhysicalName(), profileSubField );
     }
     return treeMap;
   }
-  
+
   private static List<ProfileField> createSubFieldDtos( List<ProfileField> profileSubFields ) {
     if ( profileSubFields == null ) {
       return null;
     }
     List<ProfileField> result = new ArrayList<ProfileField>( profileSubFields.size() );
     for ( ProfileField profileSubField : profileSubFields ) {
-      result.add(new ProfileFieldDistributedDTO(profileSubField) );
+      result.add( new ProfileFieldDistributedDTO( profileSubField ) );
     }
     return result;
   }
@@ -90,10 +107,16 @@ public class ProfileFieldDistributedDTO implements ProfileField {
     return result;
   }
 
+  
   @Override public String getPhysicalName() {
     return physicalName;
   }
-
+  
+  /**
+   *
+   * @param physicalName
+   *          an internal representation name for this ProfileFieldDistributedDTO
+   */
   public void setPhysicalName( String physicalName ) {
     this.physicalName = physicalName;
   }
@@ -102,6 +125,11 @@ public class ProfileFieldDistributedDTO implements ProfileField {
     return logicalName;
   }
 
+  /**
+   * 
+   * @param logicalName
+   *          a suitable name for this ProfileFieldDistributedDTO to be shown to users
+   */
   public void setLogicalName( String logicalName ) {
     this.logicalName = logicalName;
   }
@@ -117,7 +145,13 @@ public class ProfileFieldDistributedDTO implements ProfileField {
   @Override public List<ProfileFieldValueType> getTypes() {
     return types;
   }
-
+  
+  /**
+   * 
+   * @param types
+   *          a list of ProfileFieldValueTypeDistributedDTO. A ProfileFieldValueTypeDistributedDTO contains the
+   *          statistical values per value type evaluated in this field.
+   */
   public void setTypes( List<ProfileFieldValueType> types ) {
     this.types = types;
     profileFieldValueTypeMap = null;
@@ -155,6 +189,12 @@ public class ProfileFieldDistributedDTO implements ProfileField {
     return new ArrayList<ProfileField>( profileSubFields);
   }
   
+  
+  /**
+   * 
+   * @param profileSubFields
+   *          a list of ProfileField to be set as Sub Fields of this ProfileFieldDistributedDTO
+   */
   public void setProfileSubFields (List<ProfileField> profileSubFields) {
     profileSubFieldsMap = null;
     this.profileSubFields = profileSubFields;
@@ -185,11 +225,11 @@ public class ProfileFieldDistributedDTO implements ProfileField {
     if ( properties != null ? !properties.equals( that.properties ) : that.properties != null ) {
       return false;
     }
-    if ( profileSubFields != null ? !profileSubFields.equals( that.profileSubFields ) : that.profileSubFields != null ) {
+    if ( profileSubFields != null ? !profileSubFields.equals( that.profileSubFields )
+        : that.profileSubFields != null ) {
       return false;
     }
-    return !( types != null ? !types.equals( that.types ) :
-      that.types != null );
+    return !( types != null ? !types.equals( that.types ) : that.types != null );
 
   }
 

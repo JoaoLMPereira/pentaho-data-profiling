@@ -30,14 +30,34 @@ import org.pentaho.profiling.api.ProfileFieldValueType;
 import java.util.Map;
 
 /**
+ * MutableProfileFieldImpl implements the internal functionalities expected for a object of MutableProfileField.
+ * Moreover, it extends from ProfileFieldImpl which already has the expected functionalities for a PorfileField object
+ * from which MutableProfileField extends
+ * <p>
  * Created by bryan on 4/30/15.
- * Modified by jpereira
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class MutableProfileFieldImpl extends ProfileFieldImpl implements MutableProfileField {
+  /**
+   * Creates an empty MutableProfileFieldImpl by just receiving two names, one is the internal representation that works as Id
+   * and the other is a name representation for the user
+   * 
+   * @param physicalName
+   *          an unique internal name representation
+   * @param logicalName
+   *          a suitable name to be shown to users
+   */
   public MutableProfileFieldImpl( String physicalName, String logicalName ) {
     super( physicalName, logicalName );
   }
 
+  /**
+   * Creates a MutableProfileFieldImpl with the same information as the profileField
+   * @param profileField a ProfileField which variables are used to initialize a MutableProfileFieldImpl
+   */
   public MutableProfileFieldImpl( ProfileField profileField ) {
     super( profileField );
   }
@@ -56,8 +76,8 @@ public class MutableProfileFieldImpl extends ProfileFieldImpl implements Mutable
     return result;
   }
 
-  @Override public void putProfileSubField( String physicalName, ProfileField profileSubField ) {
-    profileSubFields.put( physicalName, new MutableProfileFieldImpl( profileSubField ) );
+  @Override public void addProfileSubField( ProfileField profileSubField ) {
+    profileSubFields.put( profileSubField.getPhysicalName(), new MutableProfileFieldImpl( profileSubField ) );
   }
 
   @Override public MutableProfileField getOrCreateProfileSubField( String physicalName, String logicalName ) {

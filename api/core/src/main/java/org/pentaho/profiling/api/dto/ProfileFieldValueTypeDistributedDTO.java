@@ -28,17 +28,33 @@ import org.pentaho.profiling.api.ValueTypeMetrics;
 import java.util.Map;
 
 /**
+ * The ProfileFieldValueTypeDistributedDTO is the data transfer object for ProfileFieldValueType objects to be sent to Containers in the
+ * context of HDFS profiling. It implements ProfileFieldValueType interface and its intended to transfer the required data to
+ * rebuild a ProfileFieldValueType.
+ * <p>
  * Created by jpereira on 8/9/15.
+ * 
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.0
  */
 public class ProfileFieldValueTypeDistributedDTO implements ProfileFieldValueType {
   private String typeName;
   private Long count;
   private Map<String, ValueTypeMetrics> valueTypeMetricsMap;
 
+  /**
+   * Empty constructor, it is required for json serialization.
+   */
   public ProfileFieldValueTypeDistributedDTO() {
-
+    
   }
-
+  
+  /**
+   * Creates a new ProfileFieldValueTypeDistributedDTO containing the same information of profileFieldValueType
+   * 
+   * @param profileFieldValueType
+   *          the profile field value type used to create the data transfer object
+   */
   public ProfileFieldValueTypeDistributedDTO( ProfileFieldValueType profileFieldValueType ) {
     this.typeName = profileFieldValueType.getTypeName();
     this.count = profileFieldValueType.getCount();
@@ -49,6 +65,11 @@ public class ProfileFieldValueTypeDistributedDTO implements ProfileFieldValueTyp
     return typeName;
   }
 
+  /**
+   * 
+   * @param typeName
+   *          a value type name of the metrics this ProfileFieldValueTypeDistributedDTO contains
+   */
   public void setTypeName( String typeName ) {
     this.typeName = typeName;
   }
@@ -57,6 +78,12 @@ public class ProfileFieldValueTypeDistributedDTO implements ProfileFieldValueTyp
     return count;
   }
 
+  /**
+   * 
+   * @param count
+   *          the number representing the existing values in a field that have the same value type assigned to this
+   *          ProfileFieldValueTypeDistributedDTO
+   */
   public void setCount( Long count ) {
     this.count = count;
   }
@@ -65,6 +92,11 @@ public class ProfileFieldValueTypeDistributedDTO implements ProfileFieldValueTyp
     return valueTypeMetricsMap;
   }
 
+  /**
+   * Sets a map containing the ValueTypeMetrics and their ids of this ProfileFieldValueTypeDistributedDTO. The map represents the
+   * metrics values per id
+   * @param valueTypeMetricsMap a map whose keys are String ids and values are ValueTypeMetrics
+   */
   public void setValueTypeMetricsMap(
     Map<String, ValueTypeMetrics> valueTypeMetricsMap ) {
     this.valueTypeMetricsMap = valueTypeMetricsMap;

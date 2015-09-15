@@ -37,8 +37,13 @@ import java.util.TreeMap;
 import static org.pentaho.profiling.api.util.PublicCloneableUtil.copyMap;
 
 /**
+ * ProfileFieldImpl implements the internal functionalities expected for a object of ProfileField
+ * <p>
  * Created by bryan on 4/30/15.
- * Modified by jpereira
+ * 
+ * @author bryan
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.1
  */
 public class ProfileFieldImpl implements ProfileField {
   protected Map<String, ProfileField> profileSubFields;
@@ -47,15 +52,44 @@ public class ProfileFieldImpl implements ProfileField {
   private String physicalName;
   private String logicalName;
 
+  /**
+   * Creates an empty ProfileFiledImpl by just receiving two names, one is the internal representation that works as Id
+   * and the other is a name representation for the user
+   * 
+   * @param physicalName
+   *          an unique internal name representation
+   * @param logicalName
+   *          a suitable name to be shown to users
+   */
   public ProfileFieldImpl( String physicalName, String logicalName ) {
     this( physicalName, logicalName, new HashMap<String, ProfileField>(), new HashMap<String, String>(), new HashMap<String, ProfileFieldValueType>() );
   }
 
+  /**
+   * Creates a ProfileFieldImpl with the same information as the profileField
+   * @param profileField a ProfileField which variables are used to initialize a ProfileFieldImpl
+   */
   public ProfileFieldImpl( ProfileField profileField ) {
     this( profileField.getPhysicalName(), profileField.getLogicalName(), subFieldsMapFromList( profileField
         .getProfileSubFields() ), profileField.getProperties(), mapFromList( profileField.getTypes() ) );
   }
 
+  /**
+   * Creates a ProfileFiledImpl by providing its structure including the representation names, sub fields and value
+   * types containing metric holders.
+   * 
+   * @param physicalName
+   *          an unique internal name representation
+   * @param logicalName
+   *          a suitable name to be shown to users
+   * @param profileSubFields
+   *          a list of ProfileFields to be the sub fields of this ProfileField
+   * @param properties
+   *          TODO
+   * @param types
+   *          a list of ProfileFieldValueType. A ProfileFieldValueType contains the statistical values per value type
+   *          evaluated in this field.
+   */
   public ProfileFieldImpl( String physicalName, String logicalName, Map<String, ProfileField> profileSubFields,
       Map<String, String> properties, Map<String, ProfileFieldValueType> types ) {
     this.physicalName = physicalName;
@@ -120,7 +154,7 @@ public class ProfileFieldImpl implements ProfileField {
     return new HashSet<String>( types.keySet() );
   }
 
-  public Object clone() {
+  @Override public Object clone() {
     return new ProfileFieldImpl( this );
   }
 }

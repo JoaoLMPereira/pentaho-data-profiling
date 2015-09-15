@@ -34,7 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The ProfileStatusDistributedDTO is the data transfer object for ProfileStatus objects to be sent to Containers in the
+ * context of HDFS profiling. It implements ProfileStatus interface and its intended to transfer the required data to
+ * rebuild a ProfileStatus.
+ * <p>
  * Created by jpereira on 8/9/15.
+ * 
+ * @author Joao L. M. Pereira (Joao.Pereira{[at]}pentaho.com)
+ * @version 1.0
  */
 public class ProfileStatusDistributedDTO implements ProfileStatus {
   private ProfileState profileState;
@@ -48,10 +55,19 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
   private List<ProfileFieldProperty> profileFieldProperties;
   private long sequenceNumber;
 
+  /**
+   * Empty constructor, it is required for json serialization.
+   */
   public ProfileStatusDistributedDTO() {
     this( null, null, null, null, null, null, null, null, null, 0L );
   }
-
+  
+  /**
+   * Creates a new ProfileStatusDTO containing the same information of profileStatus
+   * 
+   * @param profileStatus
+   *          the profile status used to create the data transfer object
+   */
   public ProfileStatusDistributedDTO( ProfileStatus profileStatus ) {
     this( profileStatus.getProfileState(), profileStatus.getName(), profileStatus.getId(),
       profileStatus.getProfileConfiguration(), createFieldDtos( profileStatus.getFields() ),
@@ -60,6 +76,31 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
       profileStatus.getSequenceNumber() );
   }
 
+  /**
+   * Creates a new ProfileStatusDTO
+   * 
+   * @param profileState
+   *          a profile state that indicates if a Profile is active, stopped, discarder, finished with errors or
+   *          finished successfully
+   * @param name
+   *          a name for the profile status
+   * @param id
+   *          an id to identify the profile status
+   * @param profileConfiguration
+   *          a profile configuration that contains the metric contributors and metadata information
+   * @param fields
+   *          a list of ProfileField objects
+   * @param totalEntities
+   *          TODO
+   * @param statusMessages
+   *          a list of ProfileStatusMessage which contains information to the user
+   * @param operationError
+   *          a ProfileActionExceptionWrapper TODO JavaDoc
+   * @param profileFieldProperties
+   *          a list of ProfileFieldProperty which indicates the location of the metric values
+   * @param sequenceNumber
+   *          a sequence number, incremented after updates
+   */
   public ProfileStatusDistributedDTO( ProfileState profileState, String name, String id,
                            ProfileConfiguration profileConfiguration,
                            List<ProfileField> fields, Long totalEntities,
@@ -93,6 +134,11 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return name;
   }
 
+  /**
+   * 
+   * @param name
+   *          a name for the profile status
+   */
   public void setName( String name ) {
     this.name = name;
   }
@@ -101,6 +147,12 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return profileState;
   }
 
+  /**
+   * 
+   * @param profileState
+   *          a profile state of this profile status that indicates if a Profile is active, stopped, discarder, finished
+   *          with errors or finished successfully
+   */
   public void setProfileState( ProfileState profileState ) {
     this.profileState = profileState;
   }
@@ -109,6 +161,11 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return id;
   }
 
+  /**
+   * 
+   * @param id
+   *          an id to identify the profile status
+   */
   public void setId( String id ) {
     this.id = id;
   }
@@ -117,6 +174,11 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return profileConfiguration;
   }
 
+  /**
+   * 
+   * @param profileConfiguration
+   *          a profile configuration that contains the metric contributors and metadata information
+   */
   public void setProfileConfiguration(
     ProfileConfiguration profileConfiguration ) {
     this.profileConfiguration = profileConfiguration;
@@ -126,6 +188,11 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return fields;
   }
 
+  /**
+   * 
+   * @param fields
+   *          a list of ProfileField objects
+   */
   public void setFields( List<ProfileField> fields ) {
     this.fields = fields;
   }
@@ -137,7 +204,12 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
   @Override public Long getTotalEntities() {
     return totalEntities;
   }
-
+  
+  /**
+   * TODO JavaDoc
+   * 
+   * @return
+   */
   public void setTotalEntities( Long totalEntities ) {
     this.totalEntities = totalEntities;
   }
@@ -146,6 +218,11 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return statusMessages;
   }
 
+  /**
+   * 
+   * @param statusMessages
+   *          a list of ProfileStatusMessage which contains information to the user
+   */
   public void setStatusMessages( List<ProfileStatusMessage> statusMessages ) {
     this.statusMessages = statusMessages;
   }
@@ -154,6 +231,11 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return operationError;
   }
 
+  /**
+   * TODO JavaDoc
+   * 
+   * @param operationError
+   */
   public void setOperationError( ProfileActionExceptionWrapper operationError ) {
     this.operationError = operationError;
   }
@@ -162,6 +244,11 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return profileFieldProperties;
   }
 
+  /**
+   * 
+   * @param profileFieldProperties
+   *          a list of ProfileFieldProperty which indicates the location of the metric values
+   */
   public void setProfileFieldProperties( List<ProfileFieldProperty> profileFieldProperties ) {
     this.profileFieldProperties = profileFieldProperties;
   }
@@ -170,6 +257,10 @@ public class ProfileStatusDistributedDTO implements ProfileStatus {
     return sequenceNumber;
   }
 
+  /**
+   * 
+   * @return the sequence number, incremented after updates
+   */
   public void setSequenceNumber( long sequenceNumber ) {
     this.sequenceNumber = sequenceNumber;
   }
