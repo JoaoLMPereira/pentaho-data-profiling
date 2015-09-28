@@ -1,4 +1,17 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+  <!-- Overwrite feature, used to force the upgrade of httpclient-osgi from 
+    4.3.5 to 4.3.6. This upgrade is related to a bug: Missing package for OSGI 
+    - javax.naming (https://issues.apache.org/jira/browse/HTTPCLIENT-1574) that 
+    is resolved for version 4.3.6 -->
+  <feature name="cxf-http-async" version="3.0.7" resolver="(obr)">
+    <feature version="[3,4)">cxf-http</feature>
+    <bundle start-level="40">mvn:org.apache.httpcomponents/httpcore-osgi/4.3.3</bundle>
+    <bundle start-level="40">mvn:org.apache.httpcomponents/httpclient-osgi/4.3.6</bundle>
+    <bundle start-level="40">mvn:org.apache.httpcomponents/httpasyncclient-osgi/4.0.2</bundle>
+    <bundle start-level="40">mvn:org.apache.cxf/cxf-rt-transports-http-hc/3.0.6</bundle>
+  </feature>
+    
   <feature name="pentaho-data-profiling-ce-base" version="1.0">
     <feature>http</feature>
     <feature>cxf</feature>

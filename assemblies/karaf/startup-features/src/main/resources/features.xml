@@ -1,0 +1,10 @@
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+  <feature name="pentaho-platform-plugin-deployer-feature" version="1.0">
+    <bundle start-level="6">mvn:com.googlecode.json-simple/json-simple/${json-simple.version}</bundle>
+    <bundle start-level="6">mvn:com.google.guava/guava/${guava.version}</bundle>
+    <bundle start-level="6">mvn:commons-io/commons-io/${commons-io.version}</bundle>
+    <bundle start-level="7">mvn:pentaho/pentaho-platform-plugin-deployer/${project.version}</bundle>
+  </feature>
+
+</features>

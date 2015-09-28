@@ -1,0 +1,8 @@
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+  <feature name="pentaho-common-ui-installfeature" version="1.0">
+    <bundle>mvn:pentaho/common-ui/${project.version}/zip</bundle>
+
+  </feature>
+
+</features>
